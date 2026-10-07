@@ -6,7 +6,7 @@
 <style>
 :root{--bg:#0a0a14;--p:#12122a;--c:#181838;--cy:#00f0ff;--pk:#ff2e97;--pu:#8b5cf6;--g:#39ff88;--r:#ff7a99;--a:#ffc857;--t:#e8e8ff;--m:#8a8ab0}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--t);font:500 17px Rajdhani,sans-serif;background:radial-gradient(ellipse at 50% 0,#2a0f4a,transparent 65%),var(--bg)}
-.grid{position:fixed;left:-50%;right:-50%;bottom:0;height:45vh;z-index:-1;background:linear-gradient(90deg,#3a278077 1px,transparent 1px) 0 0/60px 60px,linear-gradient(#3a278077 1px,transparent 1px) 0 0/60px 60px;transform:perspective(300px) rotateX(60deg);transform-origin:bottom}
+.grid{position:fixed;left:0;right:0;bottom:0;height:38vh;z-index:-1;pointer-events:none;background:repeating-linear-gradient(90deg,#3a278044 0 1px,transparent 1px 60px),repeating-linear-gradient(#3a278044 0 1px,transparent 1px 44px);-webkit-mask-image:linear-gradient(transparent,#000);mask-image:linear-gradient(transparent,#000)}
 h1,h2,.o{font-family:Orbitron,sans-serif}.wrap{max-width:1000px;margin:auto;padding:16px}
 .logo{font:900 clamp(40px,12vw,76px) Orbitron;color:var(--cy);text-align:center;margin:30px 0 0;text-shadow:3px 3px var(--pk),5px 5px #7a1a58}
 .sub{text-align:center;color:var(--m);letter-spacing:4px;margin-bottom:24px;font-size:14px}
@@ -27,16 +27,20 @@ th{background:#1f1f45;color:var(--cy);font-size:13px;letter-spacing:1px;padding:
 .ok{color:var(--g)}.no{color:var(--r)}.pen{color:var(--a)}.em{text-align:center;color:var(--m);padding:30px}
 .note{color:var(--m);font-size:13px;text-align:center;margin-top:18px}
 @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
-</style></head><body><div class="grid"></div><div class="wrap" id="app"></div>
+#ld{display:none;position:fixed;top:0;left:0;right:0;height:3px;z-index:9;background:linear-gradient(90deg,var(--cy),var(--pk))}.busy #ld{display:block;animation:p .7s infinite alternate}.busy button{pointer-events:none;opacity:.6}@keyframes p{to{opacity:.25}}
+</style></head><body><div id="ld"></div><div class="grid"></div><div class="wrap" id="app"></div>
 <script>
 // ====== SETTINGS ======
 const API_URL = "https://script.google.com/macros/s/AKfycbxiiB6Jh_WewInM4NV9Cd8LrLYpJpucRYK2y-BLhutSjTvffXONrW7oIEgCuO4-lnTWdg/exec";
 const LOCAL_PIN = "gambit123"; // admin PIN for demo (browser-only) mode
 // ======================
-let S={items:[],issues:[]},me=null,admin=false,pin="",tab="inv",q="";
+let S={items:[],issues:[]},me=null,admin=false,pin="",tab="inv",q="",vt="";
 const $=s=>document.querySelector(s),now=()=>new Date().toLocaleString("sv");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const act=n=>S.issues.filter(x=>x.item==n&&!x.ret).length;
+const ROLL_RE=/^MBAA?\d{5}$/; // MBA12345 or MBAA12345 (change \d{5} if your numbers have a different length)
+const validMobile=m=>/^[6-9]\d{9}$/.test(m)&&!/^(\d)\1{9}$/.test(m)&&!/^(0123456789|1234567890|9876543210)$/.test(m);
+function cleanMobile(el){let v=el.value.replace(/\D/g,"");if(v.length>10&&v.startsWith("91"))v=v.slice(2);el.value=v.slice(0,10)}
 const ICON={"board game":"♟","card game":"♠","console":"▣","controller":"◉","equipment":"⚙"};
 
 function local(a,p){
@@ -51,18 +55,21 @@ function local(a,p){
   localStorage.gambit=JSON.stringify(S)}
 
 async function call(a,p={}){
+  document.body.classList.add("busy");
   try{
     const body={pin,roll:me?me.roll:"",...p};
     if(API_URL){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:a,...body})}),j=await r.json();if(j.error)throw Error(j.error);S=j}
     else local(a,body);
   }catch(e){alert(e.message);return false}
+  finally{document.body.classList.remove("busy")}
   if(me||admin)draw();return true}
 
 function login(){
-  const name=$("#n").value.trim().replace(/\s+/g," "),roll=$("#r").value.trim().toUpperCase(),mobile=$("#m").value.replace(/[\s-]/g,"");
-  if(!name||!roll)return alert("Please enter your name and roll number.");
-  if(!/^\d{10}$/.test(mobile))return alert("Mobile number must be exactly 10 digits.");
-  me={name,roll,mobile};admin=false;pin="";tab="inv";call("get")}
+  const name=$("#n").value.trim().replace(/\s+/g," "),roll=$("#r").value.trim().toUpperCase(),mobile=$("#m").value.replace(/\D/g,"");
+  if(!/^[A-Za-z][A-Za-z .'-]{1,59}$/.test(name))return alert("Please enter your full name (letters only).");
+  if(!ROLL_RE.test(roll))return alert("Invalid roll number. Format: MBA12345 or MBAA12345.");
+  if(!validMobile(mobile))return alert("Enter a valid 10-digit mobile number (it must start with 6, 7, 8 or 9).");
+  me={name,roll,mobile};admin=false;pin="";tab="inv";draw();call("get")}
 async function adminLogin(){const p=prompt("Enter admin PIN:");if(p===null)return;pin=p;admin=true;me=null;tab="inv";
   if(!await call("auth"))logout()}
 function logout(){me=null;admin=false;pin="";q="";show()}
@@ -71,28 +78,25 @@ function show(){
   if(me||admin)return draw();
   $("#app").innerHTML=`<div class="logo">GAMBIT</div><div class="sub">GAMING CLUB · INVENTORY</div>
   <div class="card"><h2>◆ PLAYER LOGIN ◆</h2>
-  <label>PLAYER NAME</label><input id="n" autocomplete="name"><label>ROLL NUMBER</label><input id="r"><label>MOBILE NUMBER</label><input id="m" inputmode="numeric" maxlength="10">
+  <label>PLAYER NAME</label><input id="n" autocomplete="name"><label>ROLL NUMBER</label><input id="r" placeholder="MBA12345" maxlength="9" autocapitalize="characters" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"><label>MOBILE NUMBER</label><input id="m" inputmode="numeric" placeholder="10-digit number" oninput="cleanMobile(this)">
   <button class="b w" onclick="login()">▶ PRESS START</button><button class="b g w" style="font-size:14px;padding:8px;margin-top:8px" onclick="adminLogin()">★ Club admin login</button></div>
   <div class="note">${API_URL?"":"Demo mode: data is saved only in this browser."}</div>`;
   $("#app").onkeydown=e=>{if(e.key=="Enter"&&$("#m"))login()}}
 
-function draw(){
+function statHTML(){
   const tot=S.items.reduce((a,i)=>a+i.total,0),out=S.issues.filter(x=>!x.ret).length,mine=me?S.issues.filter(x=>!x.ret&&x.roll==me.roll).length:S.issues.length;
-  const stat=[["TITLES",S.items.length,"--pu"],["AVAILABLE",tot-out,"--g"],["ISSUED OUT",out,"--pk"],[admin?"ALL-TIME ISSUES":"WITH YOU",mine,"--cy"]];
-  const T=[["inv","♟ INVENTORY"],["out",admin?"◉ ALL ISSUED":"◉ MY ISSUED (RETURN)"],["his",admin?"☰ FULL HISTORY":"☰ MY HISTORY"]];
+  return [["TITLES",S.items.length,"--pu"],["AVAILABLE",tot-out,"--g"],["ISSUED OUT",out,"--pk"],[admin?"ALL-TIME ISSUES":"WITH YOU",mine,"--cy"]].map(s=>`<div class="st" style="border-color:var(${s[2]})"><b style="color:var(${s[2]})">${s[1]}</b><span>${s[0]}</span></div>`).join("")}
+function tabHTML(){
+  return [["inv","♟ INVENTORY"],["out",admin?"◉ ALL ISSUED":"◉ MY ISSUED (RETURN)"],["his",admin?"☰ FULL HISTORY":"☰ MY HISTORY"]].map(t=>`<button class="${t[0]==tab?"on":""}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join("")}
+function shell(){vt="";
   $("#app").innerHTML=`<div class="top"><div class="o">GAMBIT <small>GAMING CLUB</small></div>
   <div class="chip" style="color:${admin?"var(--pk)":"var(--t)"}">${admin?"★ ADMIN MODE":"◆ "+esc(me.name)+" · "+esc(me.roll)+" · "+esc(me.mobile)}</div>
   <button class="b g" onclick="call('get')">↻</button><button class="b d" onclick="logout()">⏻ Log out</button></div>
-  <div class="stats">${stat.map(s=>`<div class="st" style="border-color:var(${s[2]})"><b style="color:var(${s[2]})">${s[1]}</b><span>${s[0]}</span></div>`).join("")}</div>
-  <div class="tabs">${T.map(t=>`<button class="${t[0]==tab?"on":""}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join("")}</div>
-  <div class="panel" id="v"></div>`;view()}
-
+  <div class="stats" id="sx">${statHTML()}</div><div class="tabs" id="tb">${tabHTML()}</div><div class="panel" id="v"></div>`;view()}
+function draw(){if(!$("#v"))return shell();$("#sx").innerHTML=statHTML();$("#tb").innerHTML=tabHTML();view()}
 function view(){
-  let h="";
-  if(tab=="inv"){
-    h=`<div class="bar"><input placeholder="Search…" value="${esc(q)}" oninput="q=this.value;rows()">${admin?`<div class="sp"><button class="b" onclick="addItem()">＋ Add</button><button class="b g" onclick="csv()">⇩ Excel (CSV)</button></div>`:`<span style="color:var(--m);font-size:14px">Tap ▶ Issue to borrow an item</span>`}</div><div class="tw"><table id="t"></table></div>`}
-  else h=`<div class="tw"><table id="t"></table></div>`;
-  $("#v").innerHTML=h;rows()}
+  if(vt==tab&&$("#t"))return rows();vt=tab;
+  $("#v").innerHTML=tab=="inv"?`<div class="bar"><input placeholder="Search…" value="${esc(q)}" oninput="q=this.value;clearTimeout(window.st);window.st=setTimeout(rows,150)">${admin?`<div class="sp"><button class="b" onclick="addItem()">＋ Add</button><button class="b g" onclick="csv()">⇩ Excel (CSV)</button></div>`:`<span style="color:var(--m);font-size:14px">Tap ▶ Issue to borrow an item</span>`}</div><div class="tw"><table id="t"></table></div>`:`<div class="tw"><table id="t"></table></div>`;rows()}
 
 function rows(){
   const t=$("#t"),mineOnly=x=>admin||x.roll==me.roll;let hd,body;
@@ -115,7 +119,8 @@ function setQ(id,cur){const total=parseInt(prompt("New total quantity:",cur));if
 function csv(){const r=[["Item","Name","Roll No","Mobile","Issued At","Returned At"],...S.issues.map(x=>[x.item,x.name,x.roll,"'"+x.mobile,x.at,x.ret])];
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.map(l=>l.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(",")).join("\n")],{type:"text/csv"}));a.download="gambit_issues.csv";a.click()}
 
-if(API_URL)setInterval(()=>{if(me||admin)fetch(API_URL,{method:"POST",body:JSON.stringify({action:"get",pin})}).then(r=>r.json()).then(j=>{if(!j.error){S=j;draw()}})},20000);
+if(API_URL)setInterval(()=>{if(document.hidden||!(me||admin)||document.body.classList.contains("busy"))return;
+  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"get",pin})}).then(r=>r.json()).then(j=>{if(!j.error&&JSON.stringify(j)!==JSON.stringify(S)){S=j;draw()}}).catch(()=>{})},30000);
 if(!API_URL)local("get",{});else call("get");
 show();
 </script></body></html>
