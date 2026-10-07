@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GAMBIT – Gaming Club Inventory</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a14;--p:#12122a;--c:#181838;--cy:#00f0ff;--pk:#ff2e97;--pu:#8b5cf6;--g:#39ff88;--r:#ff7a99;--a:#ffc857;--t:#e8e8ff;--m:#8a8ab0}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--t);font:500 17px Rajdhani,sans-serif;background:radial-gradient(ellipse at 50% 0,#2a0f4a,transparent 65%),var(--bg)}
+.grid{position:fixed;left:-50%;right:-50%;bottom:0;height:45vh;z-index:-1;background:linear-gradient(90deg,#3a278077 1px,transparent 1px) 0 0/60px 60px,linear-gradient(#3a278077 1px,transparent 1px) 0 0/60px 60px;transform:perspective(300px) rotateX(60deg);transform-origin:bottom}
+h1,h2,.o{font-family:Orbitron,sans-serif}.wrap{max-width:1000px;margin:auto;padding:16px}
+.logo{font:900 clamp(40px,12vw,76px) Orbitron;color:var(--cy);text-align:center;margin:30px 0 0;text-shadow:3px 3px var(--pk),5px 5px #7a1a58}
+.sub{text-align:center;color:var(--m);letter-spacing:4px;margin-bottom:24px;font-size:14px}
+.card{background:var(--c);border:2px solid var(--cy);padding:26px;max-width:380px;margin:auto;box-shadow:0 0 30px #00f0ff33}
+.card h2{color:var(--cy);text-align:center;margin:0 0 16px;font-size:18px}
+label{display:block;color:var(--pu);font-weight:700;font-size:13px;letter-spacing:1px;margin:10px 0 3px}
+input{width:100%;background:#0d0d22;border:1px solid #34346a;color:var(--t);padding:10px;font:inherit;outline:0}input:focus{border-color:var(--cy)}
+.b{display:inline-block;background:var(--cy);color:#04121a;border:0;padding:9px 16px;font:700 14px Rajdhani;cursor:pointer;letter-spacing:1px}.b:hover{filter:brightness(1.2)}
+.b.g{background:#252552;color:var(--cy)}.b.d{background:#3a1224;color:var(--r)}.b.w{width:100%;padding:12px;font-size:18px;margin-top:16px}
+.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:3px solid;border-image:linear-gradient(90deg,var(--cy),var(--pu),var(--pk)) 1;padding-bottom:10px}
+.top .o{color:var(--cy);font-size:24px;margin-right:auto}.top .o small{color:var(--pk);font-size:11px}.chip{background:var(--c);padding:6px 12px;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.st{background:var(--c);text-align:center;padding:8px;border-top:3px solid}.st b{display:block;font:900 28px Orbitron}.st span{color:var(--m);font-size:12px;letter-spacing:1px}
+.tabs{display:flex;gap:2px;flex-wrap:wrap}.tabs button{background:var(--p);color:var(--m);border:0;padding:11px 18px;font:700 14px Rajdhani;cursor:pointer;letter-spacing:1px}.tabs .on{background:var(--c);color:var(--cy)}
+.panel{background:var(--c);padding:14px}.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}.bar input{max-width:240px}.bar .sp{margin-left:auto;display:flex;gap:8px}
+.tw{overflow-x:auto;background:var(--p);border:1px solid #34346a}table{width:100%;border-collapse:collapse;white-space:nowrap}
+th{background:#1f1f45;color:var(--cy);font-size:13px;letter-spacing:1px;padding:10px;text-align:left}td{padding:9px 10px}tr:nth-child(even) td{background:#171736}
+.ok{color:var(--g)}.no{color:var(--r)}.pen{color:var(--a)}.em{text-align:center;color:var(--m);padding:30px}
+.note{color:var(--m);font-size:13px;text-align:center;margin-top:18px}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style></head><body><div class="grid"></div><div class="wrap" id="app"></div>
+<script>
+// ====== SETTINGS ======
+const API_URL = "https://script.google.com/a/macros/iimkashipur.ac.in/s/AKfycbxc61s62--x-WXGUv6qrlKUf_9ae-bmlC2fTtEOPjJlb6gnftsQYjleW3qM2OJd7j9oAg/exec";
+const LOCAL_PIN = "gambit123"; // admin PIN for demo (browser-only) mode
+// ======================
+let S={items:[],issues:[]},me=null,admin=false,pin="",tab="inv",q="";
+const $=s=>document.querySelector(s),now=()=>new Date().toLocaleString("sv");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const act=n=>S.issues.filter(x=>x.item==n&&!x.ret).length;
+const ICON={"board game":"♟","card game":"♠","console":"▣","controller":"◉","equipment":"⚙"};
+
+function local(a,p){
+  S=JSON.parse(localStorage.gambit||"null")||{items:[["Chess Set","Board Game",3],["Carrom Board","Board Game",2],["Monopoly","Board Game",2],["Uno Cards","Card Game",4],["Catan","Board Game",1],["Jenga","Board Game",2],["PS5 Console","Console",1],["PS5 Controller","Controller",4],["Xbox Controller","Controller",2],["Nintendo Switch","Console",1],["Gaming Headset","Equipment",3],["HDMI Cable","Equipment",3],["Gaming Mouse","Equipment",2],["Mechanical Keyboard","Equipment",2]].map((r,i)=>({id:i+1,name:r[0],cat:r[1],total:r[2]})),issues:[]};
+  const adm=p.pin===LOCAL_PIN,need=()=>{if(!adm)throw Error("Admin PIN required")},it=S.items.find(i=>i.id==p.id);
+  if(a=="issue"){const i=S.items.find(i=>i.name==p.item);if(!i||i.total-act(i.name)<1)throw Error("All copies are already issued.");S.issues.push({id:Date.now(),item:i.name,name:p.name,roll:p.roll,mobile:p.mobile,at:now(),ret:""})}
+  if(a=="ret"){const x=S.issues.find(i=>i.id==p.id&&!i.ret);if(x){if(!adm&&x.roll!=p.roll)throw Error("You can only return your own items.");x.ret=now()}}
+  if(a=="add"){need();if(S.items.some(i=>i.name.toLowerCase()==p.name.toLowerCase()))throw Error("Item already exists.");S.items.push({id:Math.max(0,...S.items.map(i=>i.id))+1,name:p.name,cat:p.cat,total:p.total})}
+  if(a=="set"){need();if(p.total<act(it.name))throw Error("Less than the number currently issued.");it.total=p.total}
+  if(a=="del"){need();if(act(it.name))throw Error("Item is currently issued.");S.items=S.items.filter(i=>i!=it)}
+  if(a=="auth")need();
+  localStorage.gambit=JSON.stringify(S)}
+
+async function call(a,p={}){
+  try{
+    const body={pin,roll:me?me.roll:"",...p};
+    if(API_URL){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:a,...body})}),j=await r.json();if(j.error)throw Error(j.error);S=j}
+    else local(a,body);
+  }catch(e){alert(e.message);return false}
+  if(me||admin)draw();return true}
+
+function login(){
+  const name=$("#n").value.trim().replace(/\s+/g," "),roll=$("#r").value.trim().toUpperCase(),mobile=$("#m").value.replace(/[\s-]/g,"");
+  if(!name||!roll)return alert("Please enter your name and roll number.");
+  if(!/^\d{10}$/.test(mobile))return alert("Mobile number must be exactly 10 digits.");
+  me={name,roll,mobile};admin=false;pin="";tab="inv";call("get")}
+async function adminLogin(){const p=prompt("Enter admin PIN:");if(p===null)return;pin=p;admin=true;me=null;tab="inv";
+  if(!await call("auth"))logout()}
+function logout(){me=null;admin=false;pin="";q="";show()}
+
+function show(){
+  if(me||admin)return draw();
+  $("#app").innerHTML=`<div class="logo">GAMBIT</div><div class="sub">GAMING CLUB · INVENTORY</div>
+  <div class="card"><h2>◆ PLAYER LOGIN ◆</h2>
+  <label>PLAYER NAME</label><input id="n" autocomplete="name"><label>ROLL NUMBER</label><input id="r"><label>MOBILE NUMBER</label><input id="m" inputmode="numeric" maxlength="10">
+  <button class="b w" onclick="login()">▶ PRESS START</button><button class="b g w" style="font-size:14px;padding:8px;margin-top:8px" onclick="adminLogin()">★ Club admin login</button></div>
+  <div class="note">${API_URL?"":"Demo mode: data is saved only in this browser."}</div>`;
+  $("#app").onkeydown=e=>{if(e.key=="Enter"&&$("#m"))login()}}
+
+function draw(){
+  const tot=S.items.reduce((a,i)=>a+i.total,0),out=S.issues.filter(x=>!x.ret).length,mine=me?S.issues.filter(x=>!x.ret&&x.roll==me.roll).length:S.issues.length;
+  const stat=[["TITLES",S.items.length,"--pu"],["AVAILABLE",tot-out,"--g"],["ISSUED OUT",out,"--pk"],[admin?"ALL-TIME ISSUES":"WITH YOU",mine,"--cy"]];
+  const T=[["inv","♟ INVENTORY"],["out",admin?"◉ ALL ISSUED":"◉ MY ISSUED (RETURN)"],["his",admin?"☰ FULL HISTORY":"☰ MY HISTORY"]];
+  $("#app").innerHTML=`<div class="top"><div class="o">GAMBIT <small>GAMING CLUB</small></div>
+  <div class="chip" style="color:${admin?"var(--pk)":"var(--t)"}">${admin?"★ ADMIN MODE":"◆ "+esc(me.name)+" · "+esc(me.roll)+" · "+esc(me.mobile)}</div>
+  <button class="b g" onclick="call('get')">↻</button><button class="b d" onclick="logout()">⏻ Log out</button></div>
+  <div class="stats">${stat.map(s=>`<div class="st" style="border-color:var(${s[2]})"><b style="color:var(${s[2]})">${s[1]}</b><span>${s[0]}</span></div>`).join("")}</div>
+  <div class="tabs">${T.map(t=>`<button class="${t[0]==tab?"on":""}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join("")}</div>
+  <div class="panel" id="v"></div>`;view()}
+
+function view(){
+  let h="";
+  if(tab=="inv"){
+    h=`<div class="bar"><input placeholder="Search…" value="${esc(q)}" oninput="q=this.value;rows()">${admin?`<div class="sp"><button class="b" onclick="addItem()">＋ Add</button><button class="b g" onclick="csv()">⇩ Excel (CSV)</button></div>`:`<span style="color:var(--m);font-size:14px">Tap ▶ Issue to borrow an item</span>`}</div><div class="tw"><table id="t"></table></div>`}
+  else h=`<div class="tw"><table id="t"></table></div>`;
+  $("#v").innerHTML=h;rows()}
+
+function rows(){
+  const t=$("#t"),mineOnly=x=>admin||x.roll==me.roll;let hd,body;
+  if(tab=="inv"){
+    const L=S.items.filter(i=>(i.name+i.cat).toLowerCase().includes(q.toLowerCase())).sort((a,b)=>a.name.localeCompare(b.name));
+    hd=["Item","Category","Total","Available","Status",""];
+    body=L.map(i=>{const av=i.total-act(i.name),id=i.id;return[esc(i.name),(ICON[i.cat.toLowerCase()]||"◆")+" "+esc(i.cat),i.total,av,av>0?'<b class="ok">● AVAILABLE</b>':'<b class="no">✖ ISSUED</b>',
+      admin?`<button class="b g" onclick="setQ(${id},${i.total})">✎</button> <button class="b d" onclick="call('del',{id:${id}})">✖</button>`:(av>0?`<button class="b" onclick="issue(${id})">▶ Issue</button>`:"")]})}
+  else if(tab=="out"){
+    hd=["Item","Name","Roll No","Mobile","Issued At",""];
+    body=S.issues.filter(x=>!x.ret&&mineOnly(x)).sort((a,b)=>b.at.localeCompare(a.at)).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),`<button class="b" onclick="call('ret',{id:${x.id}})">✔ Return</button>`])}
+  else{
+    hd=["Item","Name","Roll No","Mobile","Issued At","Returned At"];
+    body=S.issues.filter(mineOnly).sort((a,b)=>b.at.localeCompare(a.at)).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),x.ret?esc(x.ret):'<b class="pen">Not returned</b>'])}
+  t.innerHTML=body.length?`<tr>${hd.map(h=>`<th>${h}</th>`).join("")}</tr>`+body.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join(""):`<tr><td class="em">Nothing here yet.</td></tr>`}
+
+function issue(id){const i=S.items.find(i=>i.id==id);if(confirm(`Issue '${i.name}' to ${me.name} (${me.roll})?`))call("issue",{item:i.name,name:me.name,roll:me.roll,mobile:me.mobile})}
+function addItem(){const name=prompt("Name of game/equipment:");if(!name)return;const cat=prompt("Category (Board Game, Card Game, Console, Controller, Equipment):")||"",total=parseInt(prompt("Quantity owned:","1"));if(total>0)call("add",{name:name.trim(),cat:cat.trim(),total})}
+function setQ(id,cur){const total=parseInt(prompt("New total quantity:",cur));if(total>0)call("set",{id,total})}
+function csv(){const r=[["Item","Name","Roll No","Mobile","Issued At","Returned At"],...S.issues.map(x=>[x.item,x.name,x.roll,"'"+x.mobile,x.at,x.ret])];
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.map(l=>l.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(",")).join("\n")],{type:"text/csv"}));a.download="gambit_issues.csv";a.click()}
+
+if(API_URL)setInterval(()=>{if(me||admin)fetch(API_URL,{method:"POST",body:JSON.stringify({action:"get",pin})}).then(r=>r.json()).then(j=>{if(!j.error){S=j;draw()}})},20000);
+if(!API_URL)local("get",{});else call("get");
+show();
+</script></body></html>
