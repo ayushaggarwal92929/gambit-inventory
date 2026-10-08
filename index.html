@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a14">
 <title>GAMBIT – Gaming Club Inventory</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -27,30 +28,116 @@ th{background:#1f1f45;color:var(--cy);font-size:13px;letter-spacing:1px;padding:
 .ok{color:var(--g)}.no{color:var(--r)}.pen{color:var(--a)}.em{text-align:center;color:var(--m);padding:30px}
 .note{color:var(--m);font-size:13px;text-align:center;margin-top:18px}
 @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
-#ld{display:none;position:fixed;top:0;left:0;right:0;height:3px;z-index:9;background:linear-gradient(90deg,var(--cy),var(--pk))}.busy #ld{display:block;animation:p .7s infinite alternate}.busy button{pointer-events:none;opacity:.6}@keyframes p{to{opacity:.25}}
+#ld{display:none;position:fixed;top:0;left:0;right:0;height:3px;z-index:9;background:linear-gradient(90deg,var(--cy),var(--pk))}.busy #ld{display:block;animation:p .7s infinite alternate}.busy button{pointer-events:none;opacity:.6}@keyframes p{to{opacity:.25}}a.b{text-decoration:none}
+.ev{background:var(--p);border-left:3px solid var(--pu);padding:12px;margin-bottom:10px}.ev.past{opacity:.55}.eh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.cg>b{text-align:center;color:var(--cy);padding:4px}.cd,.cd0{min-height:74px;padding:3px;font-size:13px;overflow:hidden}.cd{background:var(--p)}.cd i{color:var(--m);font-style:normal;display:block}.cd.td{outline:1px solid var(--cy)}
+.ce{display:block;background:var(--pu);color:#fff;margin:2px 0;padding:1px 4px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.br{display:flex;gap:18px;overflow-x:auto;padding:8px 0}.bc{min-width:170px;display:flex;flex-direction:column;justify-content:space-around;gap:10px}.bm{background:var(--p);border:1px solid #34346a}
+.bp{padding:6px 10px;border-bottom:1px solid #26264d}.bm .bp:last-child{border-bottom:0}.bp.w{background:#1c3a2b;color:var(--g);font-weight:700}.bp[onclick]{cursor:pointer}.bp[onclick]:hover{background:#2a2a5c}
+.pc{background:var(--p);padding:14px;margin-bottom:16px;border-left:3px solid var(--pk)}.bd{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.bg{background:var(--c);padding:8px;text-align:center;border:1px solid var(--pu)}.bg span{font-size:26px;display:block}.bg small{display:block;color:var(--m);font-size:12px}.bg.lock{opacity:.35;filter:grayscale(1)}
+@media(max-width:600px){.cd,.cd0{min-height:52px}}
+.bn{background:linear-gradient(90deg,#3a1260,#5a1042);border:1px solid var(--pk);padding:10px 14px;text-align:center;font-weight:700;margin-bottom:10px}
+textarea{width:100%;background:#0d0d22;border:1px solid #34346a;color:var(--t);padding:10px;font:inherit;outline:0}
+.av{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}.av span{font-size:24px;text-align:center;padding:4px;cursor:pointer;background:var(--p);border:2px solid transparent}.av span.on{border-color:var(--cy)}
+.ev.mine{border-left-color:var(--cy)}
+html{-webkit-text-size-adjust:100%}
+.room{text-align:center;font-weight:700;letter-spacing:1px;padding:6px;margin-bottom:8px;background:var(--p);border:1px solid #34346a}
+.tabs{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tabs::-webkit-scrollbar{display:none}.tabs button{flex:0 0 auto;white-space:nowrap}
+.wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));padding-bottom:max(16px,env(safe-area-inset-bottom))}
+@media(min-width:1100px){.wrap{max-width:1180px}}
+@media(pointer:coarse){.b{padding:12px 16px}input,select,textarea{font-size:16px}}
+@media(max-width:700px){
+body{font-size:16px}.wrap{padding-top:10px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+.top .o{flex:1 0 100%}.chip{flex:1 0 100%;order:9;text-align:center}.stats{gap:6px}.st b{font-size:22px}
+.bar input{max-width:none;flex:1 1 100%}.bar .sp{margin-left:0;width:100%;flex-wrap:wrap}
+.tw{border:0;background:none;overflow:visible}table,tbody,tr,td{display:block;width:100%}table{white-space:normal}
+tr:has(>th),th{display:none}tr{background:var(--p);border:1px solid #34346a;margin-bottom:10px;padding:6px 0}
+td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 12px;text-align:right}tr:nth-child(even) td{background:none}
+td::before{content:attr(data-l);color:var(--m);font-size:12px;letter-spacing:1px;text-transform:uppercase;text-align:left;flex:0 0 36%}
+td:empty{display:none}td[data-l=""]{justify-content:flex-end;flex-wrap:wrap}td[data-l=""]::before{display:none}
+.ln{flex:0 0 32%}.card{padding:18px}#mo{align-items:flex-end;padding:0}#mo .card{max-width:100%!important;max-height:92vh}
+.ev .eh{flex-direction:column;align-items:flex-start}.cd,.cd0{min-height:46px;padding:2px}.ce{font-size:10px;padding:0 2px}
+.bd{grid-template-columns:repeat(2,1fr)}.av{grid-template-columns:repeat(4,1fr)}.tabs button{padding:10px 14px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.lk{cursor:pointer;color:var(--cy);border-bottom:1px dotted var(--cy)}
+#mo{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
+select{width:100%;background:#0d0d22;border:1px solid #34346a;color:var(--t);padding:10px;font:inherit}
+h3{font:700 14px Orbitron;color:var(--cy);margin:4px 0 10px;letter-spacing:1px}.lg{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.lr{display:flex;align-items:center;gap:10px;padding:6px 8px;margin-bottom:4px;background:var(--p)}.lr.me{background:#2a1f55;outline:1px solid var(--pu)}
+.rk{width:28px;text-align:center}.ln{flex:0 0 38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bw{flex:1;background:#0d0d22;height:10px}.bf{height:100%}
+@media(max-width:700px){.lg{grid-template-columns:1fr}}
 </style></head><body><div id="ld"></div><div class="grid"></div><div class="wrap" id="app"></div>
 <script>
 // ====== SETTINGS ======
-const API_URL = "https://script.google.com/macros/s/AKfycbxiiB6Jh_WewInM4NV9Cd8LrLYpJpucRYK2y-BLhutSjTvffXONrW7oIEgCuO4-lnTWdg/exec";
+const API_URL = "";            // paste your Google Apps Script web-app URL here (see README)
 const LOCAL_PIN = "gambit123"; // admin PIN for demo (browser-only) mode
 // ======================
-let S={items:[],issues:[]},me=null,admin=false,pin="",tab="inv",q="",vt="";
+let S={items:[],issues:[],events:[],signups:[],reqs:[],reviews:[],brackets:[],players:[],seasons:[],teams:[],polls:[],cfg:{},waitlist:[],roster:[],feedback:[]},me=null,admin=false,pin="",tab="inv",q="",vt="";
 const $=s=>document.querySelector(s),now=()=>new Date().toLocaleString("sv");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const act=n=>S.issues.filter(x=>x.item==n&&!x.ret).length;
 const ROLL_RE=/^MBAA?\d{5}$/; // MBA12345 or MBAA12345 (change \d{5} if your numbers have a different length)
 const validMobile=m=>/^[6-9]\d{9}$/.test(m)&&!/^(\d)\1{9}$/.test(m)&&!/^(0123456789|1234567890|9876543210)$/.test(m);
 function cleanMobile(el){let v=el.value.replace(/\D/g,"");if(v.length>10&&v.startsWith("91"))v=v.slice(2);el.value=v.slice(0,10)}
+const fx=j=>({events:[],signups:[],reqs:[],reviews:[],brackets:[],players:[],seasons:[],teams:[],polls:[],cfg:{},waitlist:[],roster:[],feedback:[],...j}),imgOK=u=>/^(https?:\/\/|images\/)/.test(u||"");
+const AV=["🎮", "👾", "🤖", "🦊", "🐉", "🦁", "🐺", "🚀", "🎯", "🧠", "🔥", "⚡", "👑", "🦄", "🐼", "🐯"];
+const DEF_ABOUT="GAMBIT is our college gaming club — board games, consoles, tournaments and good company. Everyone is welcome!\n\nCommittee contacts: (admin: tap Edit to add names and numbers)",
+DEF_RULES="1. Log in with your own name, roll number and mobile number.\n2. Return items on time and in the condition you received them.\n3. Report damage or missing parts honestly when returning.\n4. Some items need a verification call from the club.\n5. Be respectful at events: no cheating, no toxicity.\n6. Fair play: XP comes from taking part, not from gaming the system.";
+const pyr=r=>S.players.find(p=>p.roll==r),tn=(r,n)=>{const p=pyr(r);return p?p.av+" "+p.tag:n},bannerHTML=()=>{const c=S.cfg||{};return(c.room?`<div class="room ${c.room=="Open"?"ok":"no"}">${c.room=="Open"?"● CLUB ROOM IS OPEN":"✖ CLUB ROOM IS CLOSED"}</div>`:"")+(c.banner?'<div class="bn">📢 '+esc(c.banner)+'</div>':"")};
+const COND=["Good","Damaged","Missing parts"];let lp="m",evView="l",cm=now().slice(0,7);
+const pend=()=>S.issues.filter(x=>!x.ret&&x.vf=="P").length;
 const ICON={"board game":"♟","card game":"♠","console":"▣","controller":"◉","equipment":"⚙"};
 
 function local(a,p){
-  S=JSON.parse(localStorage.gambit||"null")||{items:[["Chess Set","Board Game",3],["Carrom Board","Board Game",2],["Monopoly","Board Game",2],["Uno Cards","Card Game",4],["Catan","Board Game",1],["Jenga","Board Game",2],["PS5 Console","Console",1],["PS5 Controller","Controller",4],["Xbox Controller","Controller",2],["Nintendo Switch","Console",1],["Gaming Headset","Equipment",3],["HDMI Cable","Equipment",3],["Gaming Mouse","Equipment",2],["Mechanical Keyboard","Equipment",2]].map((r,i)=>({id:i+1,name:r[0],cat:r[1],total:r[2]})),issues:[]};
+  S=JSON.parse(localStorage.gambit||"null")||{items:[["Chess Set","Board Game",3],["Carrom Board","Board Game",2],["Monopoly","Board Game",2],["Uno Cards","Card Game",4],["Catan","Board Game",1],["Jenga","Board Game",2],["PS5 Console","Console",1],["PS5 Controller","Controller",4],["Xbox Controller","Controller",2],["Nintendo Switch","Console",1],["Gaming Headset","Equipment",3],["HDMI Cable","Equipment",3],["Gaming Mouse","Equipment",2],["Mechanical Keyboard","Equipment",2]].map((r,i)=>({id:i+1,name:r[0],cat:r[1],total:r[2],ver:/PS5 Console|Switch/.test(r[0])})),issues:[]};
   const adm=p.pin===LOCAL_PIN,need=()=>{if(!adm)throw Error("Admin PIN required")},it=S.items.find(i=>i.id==p.id);
-  if(a=="issue"){const i=S.items.find(i=>i.name==p.item);if(!i||i.total-act(i.name)<1)throw Error("All copies are already issued.");S.issues.push({id:Date.now(),item:i.name,name:p.name,roll:p.roll,mobile:p.mobile,at:now(),ret:""})}
-  if(a=="ret"){const x=S.issues.find(i=>i.id==p.id&&!i.ret);if(x){if(!adm&&x.roll!=p.roll)throw Error("You can only return your own items.");x.ret=now()}}
-  if(a=="add"){need();if(S.items.some(i=>i.name.toLowerCase()==p.name.toLowerCase()))throw Error("Item already exists.");S.items.push({id:Math.max(0,...S.items.map(i=>i.id))+1,name:p.name,cat:p.cat,total:p.total})}
+  if(a=="issue"){const i=S.items.find(i=>i.name==p.item);if(!i||i.repair)throw Error("This item is under repair.");if(i.total-act(i.name)<1)throw Error("All copies are already issued.");S.waitlist=(S.waitlist||[]).filter(w=>!(w.item==i.name&&w.roll==p.roll));S.issues.push({id:Date.now(),item:i.name,name:p.name,roll:p.roll,mobile:p.mobile,at:now(),ret:"",vf:i.ver?"P":""})}
+  if(a=="ret"){const x=S.issues.find(i=>i.id==p.id&&!i.ret);if(x){if(!adm&&x.roll!=p.roll)throw Error("You can only return your own items.");x.ret=now();x.cond=COND.includes(p.cond)?p.cond:"Good";x.note=String(p.note||"").slice(0,120)}}
+  if(a=="add"){need();if(S.items.some(i=>i.name.toLowerCase()==p.name.toLowerCase()))throw Error("Item already exists.");S.items.push({id:Math.max(0,...S.items.map(i=>i.id))+1,name:p.name,cat:p.cat,total:p.total,ver:!!p.ver})}
   if(a=="set"){need();if(p.total<act(it.name))throw Error("Less than the number currently issued.");it.total=p.total}
   if(a=="del"){need();if(act(it.name))throw Error("Item is currently issued.");S.items=S.items.filter(i=>i!=it)}
+  if(a=="flag"){need();it.ver=!!p.ver}
+  if(a=="verify"){need();const x=S.issues.find(i=>i.id==p.id);if(x)x.vf=now()}
+  if(a=="cond"){need();const x=S.issues.find(i=>i.id==p.id);if(x&&x.ret){x.cond=COND.includes(p.cond)?p.cond:"Good";x.note=String(p.note||"").slice(0,120)}}
+  const E=S.events=S.events||[],G=S.signups=S.signups||[],R=S.reqs=S.reqs||[],cl=(v,n)=>String(v||"").trim().slice(0,n);
+  if(a=="info"){need();Object.assign(it,{players:cl(p.players,20),time:cl(p.time,20),photo:imgOK(p.photo)?cl(p.photo,300):"",info:cl(p.info,300),glink:/^https:\/\//.test(p.glink||"")?cl(p.glink,300):"",guide:cl(p.guide,600)})}
+  if(a=="evAdd"){need();if(!cl(p.title,80))throw Error("Title required.");E.push({id:Date.now(),title:cl(p.title,80),date:cl(p.date,40),venue:cl(p.venue,80),desc:cl(p.desc,500),game:cl(p.game,60),max:+p.max||0})}
+  if(a=="evDel"){need();S.events=E.filter(e=>e.id!=p.id);S.signups=G.filter(g=>g.ev!=p.id);S.brackets=(S.brackets||[]).filter(b=>b.ev!=p.id)}
+  if(a=="evJoin"){const e=E.find(e=>e.id==p.id);if(!e)throw Error("Event not found.");if(G.some(g=>g.ev==p.id&&g.roll==p.roll))throw Error("You are already registered.");if(e.max&&G.filter(g=>g.ev==p.id).length>=e.max)throw Error("This event is full.");G.push({id:Date.now(),ev:String(p.id),name:p.name,roll:p.roll,at:now()})}
+  if(a=="evLeave")S.signups=G.filter(g=>!(g.ev==p.id&&g.roll==p.roll));
+  if(a=="rqAdd"){const t=cl(p.title,80);if(!t)throw Error("Game name required.");if(R.some(r=>r.title.toLowerCase()==t.toLowerCase()&&r.status!="Declined"))throw Error("Already requested — upvote it instead.");R.push({id:Date.now(),title:t,note:cl(p.note,200),name:p.name,roll:p.roll,at:now(),votes:[p.roll],status:"Open"})}
+  if(a=="rqVote"){const r=R.find(r=>r.id==p.id);if(r)r.votes=r.votes.includes(p.roll)?r.votes.filter(v=>v!=p.roll):[...r.votes,p.roll]}
+  if(a=="rqStatus"){need();const r=R.find(r=>r.id==p.id);if(r)r.status=p.status}
+  if(a=="rqDel"){need();S.reqs=R.filter(r=>r.id!=p.id)}
+  const V=S.reviews=S.reviews||[],B=S.brackets=S.brackets||[];
+  if(a=="rvSet"){if(!S.issues.some(x=>x.item==p.item&&x.roll==p.roll))throw Error("Borrow this item before reviewing it.");const st=Math.min(5,Math.max(1,+p.stars||5)),r=V.find(r=>r.item==p.item&&r.roll==p.roll);r?Object.assign(r,{stars:st,text:cl(p.text,150),at:now()}):V.push({id:Date.now(),item:p.item,name:p.name,roll:p.roll,stars:st,text:cl(p.text,150),at:now()})}
+  if(a=="rvDel"){need();S.reviews=V.filter(r=>r.id!=p.id)}
+  if(a=="brSet"){need();const b=B.find(b=>b.ev==p.id);b?(b.data=p.data,b.at=now()):B.push({id:Date.now(),ev:String(p.id),data:p.data,at:now()})}
+  if(a=="brDel"){need();S.brackets=B.filter(b=>b.ev!=p.id)}
+  const P=S.players=S.players||[],SE=S.seasons=S.seasons||[],TM=S.teams=S.teams||[],PO=S.polls=S.polls||[];S.cfg=S.cfg||{};
+  if(a=="tagSet"){const tag=cl(p.tag,16);if(!/^[A-Za-z0-9_ ]{3,16}$/.test(tag))throw Error("Gamer tag must be 3–16 letters, numbers or underscores.");if(!AV.includes(p.av))throw Error("Pick an avatar.");if(P.some(x=>x.roll!=p.roll&&x.tag.toLowerCase()==tag.toLowerCase()))throw Error("That gamer tag is taken.");const o=P.find(x=>x.roll==p.roll),v={roll:p.roll,tag,av:p.av,fav:cl(p.fav,40)};o?Object.assign(o,v):P.push(v)}
+  if(a=="ssEnd"){need();const cur=SE.find(x=>!x.end),td=now().slice(0,10),tro=(p.trophies||[]).slice(0,3).map((t,i)=>({roll:t.roll,name:t.name,rank:i+1,xp:t.xp}));cur?Object.assign(cur,{end:td,trophies:tro}):SE.push({id:Date.now(),name:cl(p.closeName,40)||"Season 1",start:"2000-01-01",end:td,trophies:tro});SE.push({id:Date.now()+1,name:cl(p.name,40)||"Season "+(SE.length+1),start:td,end:"",trophies:[]})}
+  if(a=="tmMake"){const n=cl(p.name,24);if(n.length<3)throw Error("Team name must be at least 3 characters.");if(TM.some(t=>t.members.some(m=>m.roll==p.roll)))throw Error("You are already in a team.");if(TM.some(t=>t.name.toLowerCase()==n.toLowerCase()))throw Error("Team name taken.");TM.push({id:Date.now(),name:n,members:[{roll:p.roll,name:p.pname}]})}
+  if(a=="tmJoin"){const t=TM.find(t=>t.id==p.id);if(!t)throw Error("Team not found.");if(TM.some(t=>t.members.some(m=>m.roll==p.roll)))throw Error("You are already in a team.");if(t.members.length>=6)throw Error("This team is full (max 6).");t.members.push({roll:p.roll,name:p.pname})}
+  if(a=="tmLeave"){const t=TM.find(t=>t.members.some(m=>m.roll==p.roll));if(t){t.members=t.members.filter(m=>m.roll!=p.roll);if(!t.members.length)S.teams=TM.filter(x=>x!=t)}}
+  if(a=="tmDel"){need();S.teams=TM.filter(t=>t.id!=p.id)}
+  if(a=="plAdd"){need();const o=(p.opts||[]).map(x=>cl(x,40)).filter(Boolean).slice(0,6);if(!cl(p.q,120)||o.length<2)throw Error("A poll needs a question and at least 2 options.");PO.push({id:Date.now(),q:cl(p.q,120),opts:o,votes:{},closes:cl(p.closes,40),status:"Open"})}
+  if(a=="plVote"){const x=PO.find(x=>x.id==p.id);if(!x)throw Error("Poll not found.");if(x.status!="Open"||(/^\d{4}-/.test(x.closes)&&now()>x.closes))throw Error("This poll is closed.");x.votes[p.roll]=+p.opt}
+  if(a=="plClose"){need();const x=PO.find(x=>x.id==p.id);if(x)x.status=x.status=="Open"?"Closed":"Open"}
+  if(a=="plDel"){need();S.polls=PO.filter(x=>x.id!=p.id)}
+  if(a=="cfg"){need();if(!["banner","rules","about","vault","room"].includes(p.key))throw Error("Unknown setting.");if(p.key=="vault"&&p.value&&!/^https:\/\//.test(String(p.value).trim()))throw Error("Link must start with https://");if(p.key=="room"&&!["","Open","Closed"].includes(p.value))throw Error("Invalid value.");S.cfg[p.key]=cl(p.value,3000)}
+  const WL=S.waitlist=S.waitlist||[],RS=S.roster=S.roster||[],FB=S.feedback=S.feedback||[];
+  if(a=="repair"){need();it.repair=!it.repair}
+  if(a=="wlJoin"){const i=S.items.find(x=>x.name==p.item);if(!i)throw Error("Item not found.");if(i.repair)throw Error("This item is under repair.");if(i.total-act(i.name)>0)throw Error("It's available now — just issue it.");if(WL.some(w=>w.item==p.item&&w.roll==p.roll))throw Error("You're already on the waitlist.");WL.push({id:Date.now(),item:p.item,name:p.pname,roll:p.roll,at:now()})}
+  if(a=="wlLeave")S.waitlist=WL.filter(w=>!(w.item==p.item&&w.roll==p.roll));
+  if(a=="rsAdd"){need();if(!/^\d{4}-\d\d-\d\d$/.test(cl(p.date,10)))throw Error("Date must look like 2026-10-25.");if(!cl(p.slot,40))throw Error("Add a time slot, e.g. 4–6 PM.");RS.push({id:Date.now(),date:cl(p.date,10),slot:cl(p.slot,40),need:Math.min(10,Math.max(1,+p.need||1)),vols:[]})}
+  if(a=="rsDel"){need();S.roster=RS.filter(x=>x.id!=p.id)}
+  if(a=="rsJoin"){const x=RS.find(x=>x.id==p.id);if(!x)throw Error("Shift not found.");if(x.date<now().slice(0,10))throw Error("That shift has passed.");if(x.vols.some(v=>v.roll==p.roll))throw Error("You're already on this shift.");if(x.vols.length>=x.need)throw Error("This shift is full.");x.vols.push({roll:p.roll,name:p.pname})}
+  if(a=="rsLeave"){const x=RS.find(x=>x.id==p.id);if(x)x.vols=x.vols.filter(v=>v.roll!=p.roll)}
+  if(a=="fbAdd"){const m=cl(p.msg,500);if(m.length<5)throw Error("Please write a bit more (at least 5 characters).");if(!["Problem","Suggestion","Other"].includes(p.type))throw Error("Pick a type.");FB.push({id:Date.now(),type:p.type,item:cl(p.item,80),msg:m,name:p.pname,roll:p.roll,mobile:p.mobile,at:now(),status:"New",reply:""})}
+  if(a=="fbStatus"){need();const x=FB.find(x=>x.id==p.id);if(x){if(["New","In progress","Resolved"].includes(p.status))x.status=p.status;if(p.reply!=null)x.reply=cl(p.reply,200)}}
+  if(a=="fbDel"){need();S.feedback=FB.filter(x=>x.id!=p.id)}
   if(a=="auth")need();
   localStorage.gambit=JSON.stringify(S)}
 
@@ -58,11 +145,11 @@ async function call(a,p={}){
   document.body.classList.add("busy");
   try{
     const body={pin,roll:me?me.roll:"",...p};
-    if(API_URL){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:a,...body})}),j=await r.json();if(j.error)throw Error(j.error);S=j}
+    if(API_URL){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:a,...body})}),j=await r.json();if(j.error)throw Error(j.error);S=fx(j)}
     else local(a,body);
   }catch(e){alert(e.message);return false}
   finally{document.body.classList.remove("busy")}
-  if(me||admin)draw();return true}
+  if(me||admin)draw();else if($("#bnr"))$("#bnr").innerHTML=bannerHTML();return true}
 
 function login(){
   const name=$("#n").value.trim().replace(/\s+/g," "),roll=$("#r").value.trim().toUpperCase(),mobile=$("#m").value.replace(/\D/g,"");
@@ -76,7 +163,7 @@ function logout(){me=null;admin=false;pin="";q="";show()}
 
 function show(){
   if(me||admin)return draw();
-  $("#app").innerHTML=`<div class="logo">GAMBIT</div><div class="sub">GAMING CLUB · INVENTORY</div>
+  $("#app").innerHTML=`<div id="bnr">${bannerHTML()}</div><div class="logo">GAMBIT</div><div class="sub">GAMING CLUB · INVENTORY</div>
   <div class="card"><h2>◆ PLAYER LOGIN ◆</h2>
   <label>PLAYER NAME</label><input id="n" autocomplete="name"><label>ROLL NUMBER</label><input id="r" placeholder="MBA12345" maxlength="9" autocapitalize="characters" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"><label>MOBILE NUMBER</label><input id="m" inputmode="numeric" placeholder="10-digit number" oninput="cleanMobile(this)">
   <button class="b w" onclick="login()">▶ PRESS START</button><button class="b g w" style="font-size:14px;padding:8px;margin-top:8px" onclick="adminLogin()">★ Club admin login</button></div>
@@ -85,42 +172,226 @@ function show(){
 
 function statHTML(){
   const tot=S.items.reduce((a,i)=>a+i.total,0),out=S.issues.filter(x=>!x.ret).length,mine=me?S.issues.filter(x=>!x.ret&&x.roll==me.roll).length:S.issues.length;
-  return [["TITLES",S.items.length,"--pu"],["AVAILABLE",tot-out,"--g"],["ISSUED OUT",out,"--pk"],[admin?"ALL-TIME ISSUES":"WITH YOU",mine,"--cy"]].map(s=>`<div class="st" style="border-color:var(${s[2]})"><b style="color:var(${s[2]})">${s[1]}</b><span>${s[0]}</span></div>`).join("")}
+  return [["TITLES",S.items.length,"--pu"],["AVAILABLE",S.items.reduce((a,i)=>a+(i.repair?0:Math.max(0,i.total-act(i.name))),0),"--g"],["ISSUED OUT",out,"--pk"],[admin?"ALL-TIME ISSUES":"WITH YOU",mine,"--cy"]].map(s=>`<div class="st" style="border-color:var(${s[2]})"><b style="color:var(${s[2]})">${s[1]}</b><span>${s[0]}</span></div>`).join("")}
 function tabHTML(){
-  return [["inv","♟ INVENTORY"],["out",admin?"◉ ALL ISSUED":"◉ MY ISSUED (RETURN)"],["his",admin?"☰ FULL HISTORY":"☰ MY HISTORY"]].map(t=>`<button class="${t[0]==tab?"on":""}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join("")}
+  return [["inv","♟ INVENTORY"],["out",admin?"◉ ALL ISSUED"+(pend()?` (${pend()} to verify)`:""):"◉ MY ISSUED (RETURN)"],["his",admin?"☰ FULL HISTORY":"☰ MY HISTORY"],["lb","★ LEADERBOARD"],["ev","◈ EVENTS"],["rq","✚ REQUESTS"],["pf","⚑ PROFILE"],["tm","⚔ TEAMS"],["ru","ℹ ABOUT & RULES"],["rs","🗓 DUTY"],["fb","✉ FEEDBACK"]].map(t=>`<button class="${t[0]==tab?"on":""}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join("")}
 function shell(){vt="";
-  $("#app").innerHTML=`<div class="top"><div class="o">GAMBIT <small>GAMING CLUB</small></div>
+  $("#app").innerHTML=`<div id="bnr">${bannerHTML()}</div><div class="top"><div class="o">GAMBIT <small>GAMING CLUB</small></div>
   <div class="chip" style="color:${admin?"var(--pk)":"var(--t)"}">${admin?"★ ADMIN MODE":"◆ "+esc(me.name)+" · "+esc(me.roll)+" · "+esc(me.mobile)}</div>
-  <button class="b g" onclick="call('get')">↻</button><button class="b d" onclick="logout()">⏻ Log out</button></div>
+  ${admin?'<button class="b g" onclick="editBanner()">📢 Banner</button><button class="b g" onclick="toggleRoom()">🚪 Room</button>':""}<button class="b g" onclick="call('get')">↻</button><button class="b d" onclick="logout()">⏻ Log out</button></div>
   <div class="stats" id="sx">${statHTML()}</div><div class="tabs" id="tb">${tabHTML()}</div><div class="panel" id="v"></div>`;view()}
-function draw(){if(!$("#v"))return shell();$("#sx").innerHTML=statHTML();$("#tb").innerHTML=tabHTML();view()}
+function draw(){if(!$("#v"))return shell();$("#bnr").innerHTML=bannerHTML();$("#sx").innerHTML=statHTML();$("#tb").innerHTML=tabHTML();view()}
 function view(){
+  if(["lb","ev","rq","pf","tm","ru","rs","fb"].includes(tab)){vt=tab;return({lb,ev:evs,rq:rqs,pf,tm:tms,ru,rs:rst,fb:fbs})[tab]()}
   if(vt==tab&&$("#t"))return rows();vt=tab;
   $("#v").innerHTML=tab=="inv"?`<div class="bar"><input placeholder="Search…" value="${esc(q)}" oninput="q=this.value;clearTimeout(window.st);window.st=setTimeout(rows,150)">${admin?`<div class="sp"><button class="b" onclick="addItem()">＋ Add</button><button class="b g" onclick="csv()">⇩ Excel (CSV)</button></div>`:`<span style="color:var(--m);font-size:14px">Tap ▶ Issue to borrow an item</span>`}</div><div class="tw"><table id="t"></table></div>`:`<div class="tw"><table id="t"></table></div>`;rows()}
 
+const condTxt=x=>!x.ret||!x.cond?"—":(x.cond=="Good"?'<b class="ok">✔ Good</b>':'<b class="no">⚠ '+esc(x.cond)+'</b>')+(x.note?' <small>'+esc(x.note)+'</small>':"");
+const dmg=i=>{if(!admin)return"";const n=S.issues.filter(z=>z.item==i.name&&z.cond&&z.cond!="Good").length;return n?` <small class="no">⚠ ${n} report${n>1?"s":""}</small>`:""};
+const vfTxt=x=>!x.vf?"—":x.vf=="P"?'<b class="pen">⏳ Call pending</b>':'<b class="ok">✔ '+esc(x.vf)+'</b>';
 function rows(){
-  const t=$("#t"),mineOnly=x=>admin||x.roll==me.roll;let hd,body;
+  const t=$("#t"),mineOnly=x=>admin||x.roll==me.roll,byNew=(a,b)=>b.at.localeCompare(a.at);let hd,body;
   if(tab=="inv"){
     const L=S.items.filter(i=>(i.name+i.cat).toLowerCase().includes(q.toLowerCase())).sort((a,b)=>a.name.localeCompare(b.name));
     hd=["Item","Category","Total","Available","Status",""];
-    body=L.map(i=>{const av=i.total-act(i.name),id=i.id;return[esc(i.name),(ICON[i.cat.toLowerCase()]||"◆")+" "+esc(i.cat),i.total,av,av>0?'<b class="ok">● AVAILABLE</b>':'<b class="no">✖ ISSUED</b>',
-      admin?`<button class="b g" onclick="setQ(${id},${i.total})">✎</button> <button class="b d" onclick="call('del',{id:${id}})">✖</button>`:(av>0?`<button class="b" onclick="issue(${id})">▶ Issue</button>`:"")]})}
+    body=L.map(i=>{const av=i.total-act(i.name),id=i.id,rep=i.repair,wl=S.waitlist.filter(w=>w.item==i.name).sort((a,b)=>a.id-b.id),pos=me?wl.findIndex(w=>w.roll==me.roll)+1:0;
+      const st=rep?'<b class="pen">🔧 UNDER REPAIR</b>':av>0?'<b class="ok">● AVAILABLE</b>'+(pos&&pos<=av?' <b class="pen">🔔 your turn</b>':""):'<b class="no">✖ ISSUED</b>'+(wl.length?` <small class="pen">⏳ ${wl.length} waiting</small>`:"");
+      const bt=admin?`<button class="b g" title="Toggle under repair" onclick="call('repair',{id:${id}})">🔧</button> <button class="b g" title="Edit details" onclick="editInfo(${id})">ℹ</button> <button class="b g" title="Toggle call verification" onclick="call('flag',{id:${id},ver:${!i.ver}})">☎</button> <button class="b g" onclick="setQ(${id},${i.total})">✎</button> <button class="b d" onclick="call('del',{id:${id}})">✖</button>`:rep||!me?"":av>0?`<button class="b" onclick="issue(${id})">▶ Issue</button>`:pos?`<button class="b g" onclick="leaveWl(${id})">Leave waitlist (#${pos})</button>`:`<button class="b g" onclick="joinWl(${id})">⏳ Join waitlist</button>`;
+      return['<span class="lk" onclick="showItem('+id+')">'+esc(i.name)+'</span>'+(i.ver?' <small class="pen">☎ call-verified</small>':"")+dmg(i)+stars(i)+(i.guide||i.glink?' <small title="Has a how-to-play guide">📖</small>':""),(ICON[i.cat.toLowerCase()]||"◆")+" "+esc(i.cat),i.total,rep?"—":Math.max(av,0),st,bt]})}
   else if(tab=="out"){
-    hd=["Item","Name","Roll No","Mobile","Issued At",""];
-    body=S.issues.filter(x=>!x.ret&&mineOnly(x)).sort((a,b)=>b.at.localeCompare(a.at)).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),`<button class="b" onclick="call('ret',{id:${x.id}})">✔ Return</button>`])}
+    hd=["Item","Name","Roll No","Mobile","Issued At","Verification",""];
+    body=S.issues.filter(x=>!x.ret&&mineOnly(x)).sort(byNew).map(x=>{const n=encodeURIComponent(String(x.mobile||"").replace(/\D/g,""));
+      return[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),vfTxt(x),
+      (admin&&x.vf=="P"?`<a class="b g" href="tel:${n}">☎ Call</a> <a class="b g" target="_blank" rel="noopener" href="https://wa.me/91${n}">WhatsApp</a> <button class="b" onclick="call('verify',{id:${x.id}})">✔ Verified</button> `:"")+`<button class="b" onclick="askCond(${x.id})">↩ Return</button>`]})}
   else{
-    hd=["Item","Name","Roll No","Mobile","Issued At","Returned At"];
-    body=S.issues.filter(mineOnly).sort((a,b)=>b.at.localeCompare(a.at)).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),x.ret?esc(x.ret):'<b class="pen">Not returned</b>'])}
-  t.innerHTML=body.length?`<tr>${hd.map(h=>`<th>${h}</th>`).join("")}</tr>`+body.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join(""):`<tr><td class="em">Nothing here yet.</td></tr>`}
+    hd=["Item","Name","Roll No","Mobile","Issued At","Returned At","Verification","Condition"].concat(admin?[""]:[]);
+    body=S.issues.filter(mineOnly).sort(byNew).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),x.ret?esc(x.ret):'<b class="pen">Not returned</b>',vfTxt(x),condTxt(x)].concat(admin?[x.ret?`<button class="b g" title="Edit condition" onclick="askCond(${x.id},1)">✎</button>`:""]:[]))}
+  t.innerHTML=body.length?`<tr>${hd.map(h=>`<th>${h}</th>`).join("")}</tr>`+body.map(r=>`<tr>${r.map((c,i)=>`<td data-l="${hd[i]||""}">${c}</td>`).join("")}</tr>`).join(""):`<tr><td class="em">Nothing here yet.</td></tr>`}
 
-function issue(id){const i=S.items.find(i=>i.id==id);if(confirm(`Issue '${i.name}' to ${me.name} (${me.roll})?`))call("issue",{item:i.name,name:me.name,roll:me.roll,mobile:me.mobile})}
-function addItem(){const name=prompt("Name of game/equipment:");if(!name)return;const cat=prompt("Category (Board Game, Card Game, Console, Controller, Equipment):")||"",total=parseInt(prompt("Quantity owned:","1"));if(total>0)call("add",{name:name.trim(),cat:cat.trim(),total})}
+function modal(html,w=420){const d=document.createElement("div");d.id="mo";
+  d.innerHTML=`<div class="card" style="width:100%;max-width:${w}px;max-height:90vh;overflow:auto">${html}<button class="b g w" style="font-size:14px;padding:8px;margin-top:10px" id="no">Close</button></div>`;
+  document.body.appendChild(d);d.onclick=e=>{if(e.target==d||e.target.id=="no")d.remove()};return d}
+const stars=i=>{const r=S.reviews.filter(x=>x.item==i.name);return r.length?` <small class="pen">★${(r.reduce((a,x)=>a+x.stars,0)/r.length).toFixed(1)}</small>`:""};
+function showItem(id){
+  const i=S.items.find(i=>i.id==id),av=i.total-act(i.name),rv=S.reviews.filter(r=>r.item==i.name),avg=rv.length?rv.reduce((a,r)=>a+r.stars,0)/rv.length:0,
+  mine=me&&rv.find(r=>r.roll==me.roll),borrowed=me&&S.issues.some(x=>x.item==i.name&&x.roll==me.roll);
+  const d=modal(`${imgOK(i.photo)?`<img src="${esc(i.photo)}" alt="" style="width:100%;max-height:220px;object-fit:cover;margin-bottom:12px" onerror="this.remove()">`:""}<h2 style="margin-bottom:8px">${esc(i.name).toUpperCase()}</h2>
+  <p style="margin:4px 0">${esc(i.cat)} · ${i.repair?'<b class="pen">🔧 Under repair</b>':av>0?`<b class="ok">${av}/${i.total} available</b>`:'<b class="no">All issued</b>'}</p>
+  <p style="margin:4px 0">👥 Players: <b>${esc(i.players||"—")}</b> &nbsp; ⏱ Play time: <b>${esc(i.time||"—")}</b></p>
+  <p style="color:var(--m);margin:8px 0 0">${esc(i.info||"No description yet.")}</p>
+  ${i.guide||i.glink?`<h3 style="margin-top:14px">📖 HOW TO PLAY</h3>${i.guide?`<p style="margin:0 0 8px;line-height:1.4">${esc(i.guide).replace(/\n/g,"<br>")}</p>`:""}${/^https:\/\//.test(i.glink||"")?`<a class="b g" target="_blank" rel="noopener" href="${esc(i.glink)}">▶ Open guide / video</a>`:""}`:""}
+  <h3 style="margin-top:16px">★ REVIEWS ${rv.length?`<span class="pen">${avg.toFixed(1)} / 5 (${rv.length})</span>`:""}</h3>
+  ${rv.slice().sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,6).map(r=>`<div class="lr" style="display:block"><b class="pen">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</b> <b>${esc(tn(r.roll,r.name))}</b>${admin?` <button class="b d" style="padding:2px 8px" onclick="call('rvDel',{id:${r.id}});mo()">✖</button>`:""}<div style="color:var(--m);font-size:14px">${esc(r.text)}</div></div>`).join("")||'<div class="em" style="padding:10px">No reviews yet.</div>'}
+  ${me?(borrowed?`<label>YOUR RATING</label><select id="rs">${[5,4,3,2,1].map(n=>`<option value="${n}"${mine&&mine.stars==n?" selected":""}>${"★".repeat(n)} (${n})</option>`).join("")}</select><label>REVIEW (OPTIONAL)</label><input id="rt" maxlength="150" value="${esc(mine?mine.text:"")}"><button class="b w" id="rsv" style="margin-top:10px">✔ SAVE REVIEW</button>`:'<p style="color:var(--m);font-size:14px">Borrow this item to leave a review.</p>'):""}`);
+  const b=$("#rsv");if(b)b.onclick=()=>{const stars=+$("#rs").value,text=$("#rt").value.trim();d.remove();call("rvSet",{item:i.name,stars,text,name:me.name})}}
+function editInfo(id){const i=S.items.find(i=>i.id==id),d=modal(`<h2>ℹ ${esc(i.name).toUpperCase()}</h2><label>PLAYERS (e.g. 2-4)</label><input id="f1" maxlength="20" value="${esc(i.players)}"><label>PLAY TIME (e.g. 30-60 min)</label><input id="f2" maxlength="20" value="${esc(i.time)}"><label>PHOTO LINK (https://… or images/chess.jpg)</label><input id="f3" maxlength="300" value="${esc(i.photo)}"><label>DESCRIPTION</label><input id="f4" maxlength="300" value="${esc(i.info)}"><label>HOW-TO-PLAY LINK (https://…, e.g. a YouTube video)</label><input id="f5" maxlength="300" value="${esc(i.glink||"")}"><label>QUICK RULES</label><textarea id="f6" rows="4" maxlength="600">${esc(i.guide||"")}</textarea><button class="b w" id="sv">✔ SAVE</button>`);
+  $("#sv").onclick=()=>{const v=k=>$("#"+k).value.trim();d.remove();call("info",{id,players:v("f1"),time:v("f2"),photo:v("f3"),info:v("f4"),glink:v("f5"),guide:v("f6")})}}
+const mo=()=>{const d=$("#mo");if(d)d.remove()};
+const gcal=e=>{const m=String(e.date).match(/^(\d{4})-(\d\d)-(\d\d)(?:[ T](\d\d):(\d\d))?/);if(!m)return"#";const st=new Date(+m[1],+m[2]-1,+m[3],+(m[4]||9),+(m[5]||0)),en=new Date(st.getTime()+72e5),p2=n=>String(n).padStart(2,"0"),f=t=>`${t.getFullYear()}${p2(t.getMonth()+1)}${p2(t.getDate())}T${p2(t.getHours())}${p2(t.getMinutes())}00`;
+  return"https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(e.title)+"&dates="+f(st)+"/"+f(en)+"&details="+encodeURIComponent(e.desc||"")+"&location="+encodeURIComponent(e.venue||"")};
+function evCard(e,inM){
+  const ps=S.signups.filter(g=>g.ev==e.id),mine=me&&ps.some(g=>g.roll==me.roll),full=e.max&&ps.length>=e.max,past=/^\d{4}-/.test(e.date)&&e.date.slice(0,10)<now().slice(0,10),x=inM?";mo()":"",hasB=S.brackets.some(b=>b.ev==e.id);
+  return `<div class="ev${past?" past":""}"><div class="eh"><b class="o">${esc(e.title)}</b><span class="pen">${esc(e.date)}${e.venue?" · "+esc(e.venue):""}</span></div>
+  ${e.game?`<div style="color:var(--pu)">◆ ${esc(e.game)}</div>`:""}<p style="margin:6px 0">${esc(e.desc)}</p>
+  <div class="eh"><span>👥 ${ps.length}${e.max?"/"+e.max:""} registered${past?" · ended":""}</span><span>
+  ${!admin&&!past?(mine?`<button class="b d" onclick="call('evLeave',{id:${e.id}})${x}">Cancel sign-up</button>`:full?'<b class="no">FULL</b>':`<button class="b" onclick="call('evJoin',{id:${e.id},name:me.name,mobile:me.mobile})${x}">▶ Sign up</button>`):""}
+  ${hasB||admin?`<button class="b g" onclick="showBracket(${e.id})">🏆 Bracket</button>`:""}
+  <a class="b g" target="_blank" rel="noopener" href="${gcal(e)}">＋ Calendar</a>
+  ${admin?`<button class="b g" onclick="showPlayers(${e.id})">Players</button> <button class="b d" onclick="call('evDel',{id:${e.id}})${x}">✖</button>`:""}</span></div></div>`}
+function showEvent(id){const e=S.events.find(e=>e.id==id);if(e)modal(evCard(e,true))}
+function evs(){
+  const bar=`<div class="bar"><button class="b ${evView=="l"?"":"g"}" onclick="evView='l';evs()">☰ List</button><button class="b ${evView=="c"?"":"g"}" onclick="evView='c';evs()">▦ Calendar</button>${admin?'<div class="sp"><button class="b" onclick="addPoll()">🗳 New poll</button><button class="b" onclick="addEvent()">＋ New event</button></div>':""}</div>${pollsHTML()}`;
+  if(evView=="c")return cal(bar);
+  const list=[...S.events].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  $("#v").innerHTML=bar+(list.length?list.map(e=>evCard(e)).join(""):'<div class="em">No events yet. Check back soon!</div>')}
+function mv(n){const[y,m]=cm.split("-").map(Number),d=new Date(y,m-1+n,1);cm=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");evs()}
+function cal(bar){
+  const[y,m]=cm.split("-").map(Number),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),by={},today=now().slice(0,10);
+  S.events.forEach(e=>{if(/^\d{4}-\d\d-\d\d/.test(e.date)&&e.date.slice(0,7)==cm)(by[+e.date.slice(8,10)]=by[+e.date.slice(8,10)]||[]).push(e)});
+  let c="";for(let i=0;i<first.getDay();i++)c+='<div class="cd0"></div>';
+  for(let d=1;d<=days;d++)c+=`<div class="cd${cm+"-"+String(d).padStart(2,"0")==today?" td":""}"><i>${d}</i>${(by[d]||[]).map(e=>`<span class="ce" onclick="showEvent(${e.id})">${esc(e.title)}</span>`).join("")}</div>`;
+  $("#v").innerHTML=bar+`<div class="bar" style="justify-content:center"><button class="b g" onclick="mv(-1)">◀</button><b class="o">${first.toLocaleString("en",{month:"long",year:"numeric"}).toUpperCase()}</b><button class="b g" onclick="mv(1)">▶</button></div><div class="cg">${"SMTWTFS".split("").map(d=>`<b>${d}</b>`).join("")}${c}</div>`}
+
+/* ---- tournament brackets ---- */
+const bj=b=>{try{return JSON.parse(b.data)}catch{return null}};
+const champ=b=>{const d=bj(b);if(!d)return"";const w=d.rounds[d.rounds.length-1][0][2];return w!=null&&w>=0?d.players[w].roll:""};
+function settle(d){d.rounds.forEach((rd,r)=>rd.forEach((m,k)=>{
+  if(r>0){m[0]=d.rounds[r-1][2*k][2];m[1]=d.rounds[r-1][2*k+1][2]}
+  if(m[0]===-1)m[2]=m[1];else if(m[1]===-1)m[2]=m[0];else if(m[2]!==m[0]&&m[2]!==m[1])m[2]=null}))}
+function mk(ps){
+  const pl=ps.map(g=>({name:g.name,roll:g.roll}));for(let i=pl.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pl[i],pl[j]]=[pl[j],pl[i]]}
+  let size=2;while(size<pl.length)size*=2;
+  const sl=pl.map((_,i)=>i).concat(Array(size-pl.length).fill(-1)),rounds=[[]];
+  for(let i=0;i<size/2;i++)rounds[0].push([sl[i],sl[size-1-i],null]);
+  for(let n=size/4;n>=1;n/=2)rounds.push(Array.from({length:n},()=>[null,null,null]));
+  const d={players:pl,rounds};settle(d);return d}
+const saveBr=(id,d)=>call("brSet",{id,data:JSON.stringify(d)}).then(ok=>{if(ok)showBracket(id)});
+function showBracket(id){
+  const b=S.brackets.find(x=>x.ev==id),d=b&&bj(b);
+  if(d)return drawBr(id,d);
+  if(!admin)return alert("No bracket for this event yet.");
+  const ps=S.signups.filter(g=>g.ev==id);if(ps.length<2)return alert("You need at least 2 sign-ups to create a bracket.");
+  if(confirm(`Create a knockout bracket from ${ps.length} sign-ups?`)){mo();saveBr(id,mk(ps))}}
+function drawBr(id,d){
+  mo();const e=S.events.find(x=>x.id==id),R=d.rounds,names=["Final","Semi-finals","Quarter-finals"],nm=r=>names[R.length-1-r]||"Round of "+R[r].length*2;
+  const ok=i=>i!=null&&i>=0,pn=i=>i==null?'<i style="color:var(--m)">TBD</i>':i==-1?'<i style="color:var(--m)">— bye —</i>':esc(d.players[i].name);
+  const row=(r,k,i)=>{const m=R[r][k],won=ok(i)&&m[2]===i;return`<div class="bp${won?" w":""}"${admin&&ok(m[0])&&ok(m[1])?` onclick="pickW(${id},${r},${k},${i})"`:""}>${pn(i)}${won?" ✔":""}</div>`};
+  const ch=R[R.length-1][0][2];
+  modal(`<h2>🏆 ${esc(e?e.title:"Bracket").toUpperCase()}</h2>${ok(ch)?`<p class="pen" style="font-size:20px;margin:0 0 8px">🏆 CHAMPION: <b>${esc(d.players[ch].name)}</b></p>`:""}<div class="br">${R.map((rd,r)=>`<div class="bc"><h3>${nm(r)}</h3>${rd.map((m,k)=>`<div class="bm">${row(r,k,m[0])}${row(r,k,m[1])}</div>`).join("")}</div>`).join("")}</div>${admin?`<p style="color:var(--m);font-size:13px">Tap a player to mark them as the winner of that match (tap again to undo).</p><button class="b d" onclick="resetBr(${id})">Reset bracket</button>`:""}`,900)}
+function pickW(id,r,k,i){const d=bj(S.brackets.find(x=>x.ev==id)),m=d.rounds[r][k];m[2]=m[2]===i?null:i;settle(d);saveBr(id,d)}
+function resetBr(id){if(confirm("Delete this bracket?")){mo();call("brDel",{id})}}
+
+/* ---- XP, levels and badges ---- */
+const TITLES=["Rookie","Challenger","Strategist","Veteran","Elite","Legend"],
+XPR="How to earn XP: borrow an item +10 · return it in Good condition +15 (+5 otherwise) · join an event +20 · write a review +5 · request a game +5 · win a tournament +50 · season XP resets each season; level and badges are lifetime",
+BADGES=[["🎮","First Blood","Borrow your first item",s=>s.n>=1],["🔥","Regular","Borrow 5 times",s=>s.n>=5],["🧭","Explorer","Try 5 different games",s=>s.games>=5],["✨","Clean Player","Return 3 items in Good condition",s=>s.good>=3],
+["📅","Event Regular","Join 3 events",s=>s.ev>=3],["📝","Critic","Write 3 reviews",s=>s.rv>=3],["📣","Voice of the Club","Make 2 game requests",s=>s.rq>=2],["🔥","On Fire","4-week activity streak",s=>s.streak>=4],["⚡","Unstoppable","8-week activity streak",s=>s.streak>=8],["🏆","Champion","Win a tournament",s=>s.wins>=1]];
+const wk=d=>{const[y,m,dd]=String(d).slice(0,10).split("-").map(Number);return Math.floor((Date.UTC(y,m-1,dd)/864e5+3)/7)};
+function streak(roll){const w=new Set([...S.issues,...S.signups,...S.reviews,...S.reqs].filter(x=>x.roll==roll&&/^\d{4}-/.test(x.at)).map(x=>wk(x.at)));let c=wk(now()),n=0;if(!w.has(c))c--;while(w.has(c)){n++;c--}return n}
+function stat(roll,from=""){
+  const f=x=>!from||String(x.at)>=from,I=S.issues.filter(x=>x.roll==roll&&f(x)),R=I.filter(x=>x.ret),good=R.filter(x=>(x.cond||"Good")=="Good").length,ev=S.signups.filter(g=>g.roll==roll&&f(g)).length,rv=S.reviews.filter(r=>r.roll==roll&&f(r)).length,rq=S.reqs.filter(r=>r.roll==roll&&f(r)).length,wins=S.brackets.filter(b=>champ(b)==roll&&f(b)).length;
+  const xp=I.length*10+good*15+(R.length-good)*5+ev*20+rv*5+rq*5+wins*50,lvl=1+Math.floor(Math.sqrt(xp/30));
+  return{xp,lvl,lo:30*(lvl-1)**2,hi:30*lvl**2,n:I.length,good,ev,rv,rq,wins,games:new Set(I.map(x=>x.item)).size,streak:from?0:streak(roll)}}
+const rollsMap=()=>{const m={};[...S.issues,...S.signups,...S.reviews,...S.reqs].forEach(x=>{if(x.roll)m[x.roll]=x.name});return m},
+cs=()=>S.seasons.find(s=>!s.end)||{name:"Season 1",start:""},medal=i=>["🥇","🥈","🥉"][i]||i+1;
+function pf(){
+  const c=cs(),rm=rollsMap(),board=Object.keys(rm).map(r=>({r,n:tn(r,rm[r]),xp:stat(r,c.start).xp,lvl:stat(r).lvl})).filter(p=>p.xp>0).sort((a,b)=>b.xp-a.xp),
+  mine=me?stat(me.roll):null,T=l=>TITLES[Math.min(l-1,5)],my=me&&pyr(me.roll),rank=me?board.findIndex(p=>p.r==me.roll)+1:0,
+  tro=me?S.seasons.flatMap(s=>(s.trophies||[]).filter(t=>t.roll==me.roll).map(t=>medal(t.rank-1)+" "+s.name)):[];
+  $("#v").innerHTML=(mine?`<div class="pc"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="font-size:42px">${my?my.av:"🎮"}</span><div><div class="o" style="font-size:20px;color:var(--cy)">${esc(my?my.tag:me.name)}</div><div style="color:var(--m);font-size:14px">${my?esc(me.name)+(my.fav?" · ♥ "+esc(my.fav):""):"No gamer tag yet — set one!"}</div></div><button class="b g" style="margin-left:auto" onclick="editTag()">✎ Gamer tag</button></div>
+  <div style="margin-top:10px">LEVEL <b class="o" style="color:var(--pk);font-size:24px">${mine.lvl}</b> · ${T(mine.lvl).toUpperCase()}</div>
+  <div class="bw" style="height:14px;margin:8px 0"><div class="bf" style="width:${(mine.xp-mine.lo)/(mine.hi-mine.lo)*100}%;background:linear-gradient(90deg,var(--cy),var(--pk))"></div></div>
+  <div style="color:var(--m);font-size:14px">${mine.xp} XP lifetime · ${mine.hi-mine.xp} XP to level ${mine.lvl+1}</div>
+  <div style="margin-top:8px">🏁 <b>${esc(c.name)}</b> · ${stat(me.roll,c.start).xp} XP this season${rank?" · rank #"+rank:""}</div>
+  <div>🔥 Activity streak: <b>${mine.streak}</b> week${mine.streak==1?"":"s"}</div>
+  <div>🏆 Trophies: ${tro.length?tro.map(esc).join(" · "):'<span style="color:var(--m)">none yet</span>'}</div>
+  <h3 style="margin-top:14px">BADGES (${BADGES.filter(b=>b[3](mine)).length}/${BADGES.length})</h3><div class="bd">${BADGES.map(b=>`<div class="bg${b[3](mine)?"":" lock"}"><span>${b[0]}</span><b>${b[1]}</b><small>${b[2]}</small></div>`).join("")}</div></div>`:"")
+  +`<div class="bar"><h3 style="margin:0">⚑ TOP XP · ${esc(c.name).toUpperCase()}</h3>${admin?'<div class="sp"><button class="b d" onclick="endSeason()">⏹ End season &amp; award trophies</button></div>':""}</div>`
+  +(board.length?board.slice(0,10).map((p,i)=>`<div class="lr${me&&p.r==me.roll?" me":""}"><span class="rk">${medal(i)}</span><span class="ln">${esc(p.n)}</span><span style="flex:1;color:var(--m)">Lv ${p.lvl} · ${T(p.lvl)}</span><b>${p.xp} XP</b></div>`).join(""):'<div class="em">No XP earned this season yet.</div>')
+  +(S.seasons.some(s=>s.end&&(s.trophies||[]).length)?`<h3 style="margin-top:16px">🏆 HALL OF FAME</h3>`+S.seasons.filter(s=>s.end&&(s.trophies||[]).length).reverse().map(s=>`<div class="lr" style="display:block"><b>${esc(s.name)}</b> <span style="color:var(--m);font-size:13px">${esc((s.start>"2001"?s.start+" → ":"")+s.end)}</span><div>${s.trophies.map(t=>medal(t.rank-1)+" "+esc(tn(t.roll,t.name))+" ("+t.xp+" XP)").join(" · ")}</div></div>`).join(""):"")
+  +`<p class="note" style="text-align:left">${XPR}</p>`}
+function endSeason(){const c=cs(),rm=rollsMap(),top=Object.keys(rm).map(r=>({roll:r,name:rm[r],xp:stat(r,c.start).xp})).filter(x=>x.xp>0).sort((a,b)=>b.xp-a.xp).slice(0,3);
+  const nm=prompt(`End "${c.name}" and start a new season?\n\nTrophies go to: ${top.map(t=>t.name+" ("+t.xp+" XP)").join(", ")||"nobody yet"}.\n\nName of the NEW season:`,"Season "+(S.seasons.length+(S.seasons.some(s=>!s.end)?1:2)));
+  if(nm)call("ssEnd",{name:nm,closeName:c.name,trophies:top})}
+function editTag(){const o=pyr(me.roll)||{};let av=o.av||AV[0];
+  const d=modal(`<h2>✎ GAMER TAG</h2><label>GAMER TAG (3–16 letters or numbers)</label><input id="g1" maxlength="16" value="${esc(o.tag||"")}"><label>AVATAR</label><div class="av" id="avs">${AV.map(a=>`<span data-a="${a}" class="${a==av?"on":""}">${a}</span>`).join("")}</div><label>FAVOURITE GAME (OPTIONAL)</label><input id="g2" maxlength="40" value="${esc(o.fav||"")}"><button class="b w" id="sv">✔ SAVE</button>`);
+  $("#avs").onclick=e=>{const a=e.target.dataset&&e.target.dataset.a;if(a){av=a;[...$("#avs").children].forEach(x=>x.classList.toggle("on",x.dataset.a==a))}};
+  $("#sv").onclick=()=>call("tagSet",{tag:$("#g1").value.trim(),av,fav:$("#g2").value.trim()}).then(ok=>{if(ok)d.remove()})}
+function tms(){
+  const f=cs().start,my=me&&S.teams.find(t=>t.members.some(m=>m.roll==me.roll)),L=S.teams.map(t=>({...t,xp:t.members.reduce((a,m)=>a+stat(m.roll,f).xp,0)})).sort((a,b)=>b.xp-a.xp);
+  $("#v").innerHTML=`<div class="bar">${me&&!my?'<button class="b" onclick="mkTeam()">＋ Create team</button>':""}${my?`<button class="b d" onclick="call('tmLeave')">Leave my team</button>`:""}<span style="color:var(--m);font-size:14px">Teams of up to 6 · team XP = members' season XP</span></div>`
+  +(L.length?L.map((t,i)=>`<div class="ev${my&&my.id==t.id?" mine":""}"><div class="eh"><b class="o">${medal(i)} ${esc(t.name)}</b><span class="pen">${t.xp} XP · ${t.members.length}/6</span></div><div style="margin:6px 0;color:var(--m)">${t.members.map((m,k)=>(k?"":"♛ ")+esc(tn(m.roll,m.name))).join(" · ")}</div>
+  <div class="eh"><span></span><span>${me&&!my&&t.members.length<6?`<button class="b" onclick="call('tmJoin',{id:${t.id},pname:me.name})">▶ Join</button>`:""}${admin?`<button class="b d" onclick="call('tmDel',{id:${t.id}})">✖</button>`:""}</span></div></div>`).join(""):'<div class="em">No teams yet — create the first one!</div>')}
+function mkTeam(){const name=prompt("Team name (3–24 characters):");if(name)call("tmMake",{name,pname:me.name})}
+function pollsHTML(){
+  return [...S.polls].sort((a,b)=>(a.status!="Open")-(b.status!="Open")).map(x=>{
+    const vs=Object.values(x.votes),cnt=x.opts.map((_,i)=>vs.filter(v=>v==i).length),mx=Math.max(...cnt,1),my=me?x.votes[me.roll]:undefined,closed=x.status!="Open"||(/^\d{4}-/.test(x.closes)&&now()>x.closes),can=!closed&&me;
+    return `<div class="pc" style="border-color:var(--cy)"><div class="eh"><b class="o">🗳 ${esc(x.q)}</b><span class="${closed?"no":"ok"}">${closed?"CLOSED":"OPEN"}${x.closes&&!closed?" · until "+esc(x.closes):""}</span></div>
+    ${x.opts.map((o,i)=>`<div class="lr"${can?` style="cursor:pointer" onclick="call('plVote',{id:${x.id},opt:${i}})"`:""}><span class="ln" style="flex:0 0 34%">${my===i?"✔ ":""}${esc(o)}</span><div class="bw"><div class="bf" style="width:${cnt[i]/mx*100}%;background:var(${closed&&cnt[i]==mx&&mx>0?"--g":"--pu"})"></div></div><b>${cnt[i]}</b></div>`).join("")}
+    <div class="eh"><span style="color:var(--m);font-size:13px">${vs.length} vote${vs.length==1?"":"s"}${can?" · tap an option to vote (you can change it)":""}</span>${admin?`<span><button class="b g" onclick="call('plClose',{id:${x.id}})">${x.status=="Open"?"Close":"Reopen"}</button> <button class="b d" onclick="call('plDel',{id:${x.id}})">✖</button></span>`:""}</div></div>`}).join("")}
+function addPoll(){const q=prompt("Poll question (e.g. What should we play on Friday?):");if(!q)return;
+  const o=(prompt("Options, separated by commas (2–6):","FIFA, Uno, Chess")||"").split(",").map(x=>x.trim()).filter(Boolean);call("plAdd",{q,opts:o,closes:prompt("Closes at (optional, e.g. 2026-10-30 18:00):")||""})}
+function editBanner(){const t=prompt("Announcement banner (leave empty to remove):",S.cfg.banner||"");if(t!==null)call("cfg",{key:"banner",value:t.trim()})}
+const vaultHTML=()=>{const u=String((S.cfg&&S.cfg.vault)||"").trim();return /^https:\/\//.test(u)?`<p style="margin:0 0 12px">Browse the club's vault of games on Google Drive.</p><a class="b" target="_blank" rel="noopener" href="${esc(u)}">📂 OPEN GAME VAULT</a>`:`<p style="margin:0;color:var(--m)">The vault link hasn't been added yet.${admin?" Tap “Edit about &amp; rules” to add it.":""}</p>`};
+function ru(){const t=k=>esc(S.cfg[k]||(k=="about"?DEF_ABOUT:DEF_RULES)).replace(/\n/g,"<br>");
+  $("#v").innerHTML=`<div class="bar">${admin?'<div class="sp"><button class="b g" onclick="editTxt()">✎ Edit about &amp; rules</button></div>':""}</div><div class="lg"><div class="pc"><h3>◆ ABOUT GAMBIT</h3><p style="margin:0;line-height:1.5">${t("about")}</p></div><div class="pc"><h3>◆ CLUB RULES</h3><p style="margin:0;line-height:1.5">${t("rules")}</p></div></div><div class="pc"><h3>◆ GAME VAULT · GOOGLE DRIVE</h3>${vaultHTML()}</div>`}
+function editTxt(){const d=modal(`<h2>✎ ABOUT &amp; RULES</h2><label>ABOUT / CONTACTS</label><textarea id="t1" rows="5">${esc(S.cfg.about||DEF_ABOUT)}</textarea><label>RULES</label><textarea id="t2" rows="8">${esc(S.cfg.rules||DEF_RULES)}</textarea><label>GAME VAULT LINK (GOOGLE DRIVE, STARTS WITH https://)</label><input id="t3" maxlength="500" value="${esc(S.cfg.vault||"")}"><button class="b w" id="sv">✔ SAVE</button>`,520);
+  $("#sv").onclick=async()=>{const v=[["about",$("#t1").value],["rules",$("#t2").value],["vault",$("#t3").value.trim()]];d.remove();for(const[k,x]of v)if(!await call("cfg",{key:k,value:x}))break}}
+const joinWl=id=>{const i=S.items.find(x=>x.id==id);call("wlJoin",{item:i.name,pname:me.name,mobile:me.mobile})},leaveWl=id=>{const i=S.items.find(x=>x.id==id);call("wlLeave",{item:i.name})};
+function toggleRoom(){call("cfg",{key:"room",value:S.cfg.room=="Open"?"Closed":"Open"})}
+function rst(){
+  const today=now().slice(0,10),L=S.roster.filter(x=>x.date>=today).sort((a,b)=>(a.date+a.slot).localeCompare(b.date+b.slot)),room=S.cfg.room;
+  $("#v").innerHTML=`<div class="bar"><b>Club room: <span class="${room=="Open"?"ok":room=="Closed"?"no":""}">${room||"not set"}</span></b>${admin?'<div class="sp"><button class="b g" onclick="toggleRoom()">🚪 Open / Closed</button><button class="b" onclick="addShift()">＋ Add shift</button></div>':""}</div>`
+  +(L.length?L.map(x=>{const mine=me&&x.vols.some(v=>v.roll==me.roll),full=x.vols.length>=x.need;
+    return `<div class="ev${x.date==today?" mine":""}"><div class="eh"><b class="o">${esc(x.date)}${x.date==today?" · TODAY":""}</b><span class="pen">${esc(x.slot)}</span></div>
+    <div style="margin:6px 0;color:var(--m)">${x.vols.length?x.vols.map(v=>esc(tn(v.roll,v.name))).join(" · "):"Nobody yet"}</div>
+    <div class="eh"><span>👥 ${x.vols.length}/${x.need} on duty</span><span>${me?(mine?`<button class="b d" onclick="call('rsLeave',{id:${x.id}})">Leave shift</button>`:full?'<b class="no">FULL</b>':`<button class="b" onclick="call('rsJoin',{id:${x.id},pname:me.name})">▶ Volunteer</button>`):""}${admin?`<button class="b d" onclick="call('rsDel',{id:${x.id}})">✖</button>`:""}</span></div></div>`}).join(""):'<div class="em">No upcoming duty shifts.</div>')}
+function addShift(){const date=prompt("Date (format 2026-10-25):",now().slice(0,10));if(!date)return;const slot=prompt("Time slot (e.g. 4:00–6:00 PM):");if(!slot)return;call("rsAdd",{date:date.trim(),slot,need:parseInt(prompt("Volunteers needed:","2"))||1})}
+const FT={Problem:"no",Suggestion:"ok",Other:"pen"},FS={New:"pen","In progress":"pen",Resolved:"ok"};
+function fbs(){
+  const L=S.feedback.filter(x=>admin||(me&&x.roll==me.roll)).sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  $("#v").innerHTML=`<div class="bar">${me?'<button class="b" onclick="addFb()">＋ New report</button>':""}<span style="color:var(--m);font-size:14px">${admin?"Reports from members":"Report a problem or suggest an improvement — only the committee sees it"}</span></div>`
+  +(L.length?L.map(x=>`<div class="lr" style="display:block"><div class="eh"><span><b class="${FT[x.type]||"pen"}">${esc(String(x.type).toUpperCase())}</b>${x.item?" · "+esc(x.item):""}</span><span class="${FS[x.status]||"pen"}"><b>${esc(x.status)}</b> <small style="color:var(--m)">${esc(x.at)}</small></span></div>
+   <p style="margin:6px 0">${esc(x.msg)}</p>${admin?`<div style="color:var(--m);font-size:13px">${esc(x.name)} · ${esc(x.roll)} · ${esc(x.mobile||"")}</div>`:""}${x.reply?`<div class="pc" style="margin:6px 0 0;padding:8px"><b>💬 Committee:</b> ${esc(x.reply)}</div>`:""}
+   ${admin?`<div class="eh" style="margin-top:8px"><select style="width:auto" onchange="call('fbStatus',{id:${x.id},status:this.value})">${["New","In progress","Resolved"].map(s=>`<option${s==x.status?" selected":""}>${s}</option>`).join("")}</select><span><button class="b g" onclick="replyFb(${x.id})">💬 Reply</button>${x.item&&x.type=="Problem"?` <button class="b g" onclick="repairByName(${x.id})">🔧 Mark under repair</button>`:""} <button class="b d" onclick="call('fbDel',{id:${x.id}})">✖</button></span></div>`:""}</div>`).join(""):'<div class="em">No reports yet.</div>')}
+function addFb(){const d=modal(`<h2>✉ NEW REPORT</h2><label>TYPE</label><select id="b1"><option>Problem</option><option>Suggestion</option><option>Other</option></select><label>ABOUT AN ITEM? (OPTIONAL)</label><select id="b2"><option value="">— none —</option>${[...S.items].sort((a,b)=>a.name.localeCompare(b.name)).map(i=>`<option value="${esc(i.name)}">${esc(i.name)}</option>`).join("")}</select><label>DETAILS</label><textarea id="b3" rows="5" maxlength="500" placeholder="What happened, or what would you like to see?"></textarea><button class="b w" id="sv">✔ SUBMIT</button>`);
+  $("#sv").onclick=()=>call("fbAdd",{type:$("#b1").value,item:$("#b2").value,msg:$("#b3").value.trim(),pname:me.name,mobile:me.mobile}).then(ok=>{if(ok){d.remove();alert("Thanks! Your report was sent to the committee.")}})}
+function replyFb(id){const x=S.feedback.find(x=>x.id==id),t=prompt("Reply to this member (shown on their report):",x.reply||"");if(t!==null)call("fbStatus",{id,reply:t.trim()})}
+function repairByName(id){const x=S.feedback.find(x=>x.id==id),i=S.items.find(i=>i.name==x.item);if(i&&!i.repair)call("repair",{id:i.id})}
+function showPlayers(id){const e=S.events.find(e=>e.id==id),ps=S.signups.filter(g=>g.ev==id);
+  modal(`<h2>${esc(e.title).toUpperCase()}</h2>`+(ps.length?ps.map((g,i)=>`<div class="lr"><span class="rk">${i+1}</span><span style="flex:1">${esc(g.name)} · ${esc(g.roll)}</span><button class="b d" onclick="call('evLeave',{id:${id},roll:'${esc(g.roll)}'});document.getElementById('mo').remove()">✖</button></div>`).join(""):'<div class="em">Nobody yet.</div>'))}
+function addEvent(){const title=prompt("Event title (e.g. FIFA Tournament):");if(!title)return;const date=prompt("Date & time (format 2026-10-25 18:00):",now().slice(0,10)+" 18:00");if(!date)return;
+  call("evAdd",{title,date,venue:prompt("Venue:")||"",game:prompt("Game (optional):")||"",max:parseInt(prompt("Max participants (0 = unlimited):","0"))||0,desc:prompt("Short description:")||""})}
+const ST={Open:"pen",Approved:"ok",Bought:"ok",Declined:"no"};
+function rqs(){
+  const L=[...S.reqs].sort((a,b)=>(b.status!="Declined")-(a.status!="Declined")||b.votes.length-a.votes.length||String(b.at).localeCompare(String(a.at)));
+  $("#v").innerHTML=`<div class="bar">${me?'<button class="b" onclick="addReq()">＋ Request a game</button>':""}<span style="color:var(--m);font-size:14px">Upvote what you want the club to get next</span></div>`+(L.length?L.map(r=>{const v=me&&r.votes.includes(me.roll);
+    return `<div class="lr" style="padding:10px">${me?`<button class="b ${v?"":"g"}" onclick="call('rqVote',{id:${r.id}})">▲ ${r.votes.length}</button>`:`<b>▲ ${r.votes.length}</b>`}
+    <div style="flex:1"><b>${esc(r.title)}</b> <b class="${ST[r.status]||"pen"}" style="font-size:13px">[${esc(r.status)}]</b><div style="color:var(--m);font-size:14px">${esc(r.note)} — ${esc(tn(r.roll,r.name))}</div></div>
+    ${admin?`<select style="width:auto" onchange="call('rqStatus',{id:${r.id},status:this.value})">${["Open","Approved","Bought","Declined"].map(x=>`<option${x==r.status?" selected":""}>${x}</option>`).join("")}</select> <button class="b d" onclick="call('rqDel',{id:${r.id}})">✖</button>`:""}</div>`}).join(""):'<div class="em">No requests yet — suggest a game!</div>')}
+function addReq(){const title=prompt("Game or equipment you'd like the club to get:");if(!title)return;call("rqAdd",{title,note:prompt("Why? (optional, e.g. great for 4 players)")||"",name:me.name})}
+function askCond(id,edit){
+  const x=S.issues.find(i=>i.id==id),d=document.createElement("div");d.id="mo";
+  d.innerHTML=`<div class="card" style="width:100%;max-width:360px"><h2>${edit?"✎ CONDITION CHECK":"↩ RETURN"}: ${esc(x.item).toUpperCase()}</h2><label>CONDITION</label><select id="cd">${COND.map(c=>`<option${c==x.cond?" selected":""}>${c}</option>`).join("")}</select><label>NOTE (REQUIRED IF NOT GOOD)</label><input id="cn" maxlength="120" value="${esc(x.note||"")}" placeholder="e.g. scratch on controller"><button class="b w" id="ok">✔ CONFIRM</button><button class="b g w" style="font-size:14px;padding:8px;margin-top:8px" id="no">Cancel</button></div>`;
+  document.body.appendChild(d);
+  $("#no").onclick=()=>d.remove();
+  $("#ok").onclick=()=>{const cond=$("#cd").value,note=$("#cn").value.trim();if(cond!="Good"&&!note)return alert("Please add a short note describing the problem.");d.remove();call(edit?"cond":"ret",{id,cond,note})}}
+function lb(){
+  const mo=now().slice(0,7),L=S.issues.filter(x=>lp=="a"||String(x.at).slice(0,7)==mo);
+  const top=(key,label)=>{const m={};L.forEach(x=>{const k=key(x);(m[k]=m[k]||{k,n:0,l:label(x)}).n++});return Object.values(m).sort((a,b)=>b.n-a.n).slice(0,10)};
+  const list=(a,c)=>a.length?a.map((r,i)=>`<div class="lr${me&&r.k==me.roll?" me":""}"><span class="rk">${["🥇","🥈","🥉"][i]||i+1}</span><span class="ln">${esc(r.l)}</span><div class="bw"><div class="bf" style="width:${r.n/a[0].n*100}%;background:var(${c})"></div></div><b>${r.n}</b></div>`).join(""):'<div class="em">No activity yet.</div>';
+  $("#v").innerHTML=`<div class="bar"><button class="b ${lp=="m"?"":"g"}" onclick="lp='m';lb()">This month</button><button class="b ${lp=="a"?"":"g"}" onclick="lp='a';lb()">All time</button></div>
+  <div class="lg"><div><h3>★ TOP PLAYERS</h3>${list(top(x=>x.roll,x=>tn(x.roll,x.name)),"--cy")}</div><div><h3>◆ MOST BORROWED</h3>${list(top(x=>x.item,x=>x.item),"--pk")}</div></div>`}
+function issue(id){const i=S.items.find(i=>i.id==id);if(i.repair)return alert("This item is under repair.");
+  if(confirm(`Issue '${i.name}' to ${me.name} (${me.roll})?`+(i.ver?`\n\nNote: this item needs a quick verification call from the club to ${me.mobile}. Please keep your phone reachable.`:"")))call("issue",{item:i.name,name:me.name,roll:me.roll,mobile:me.mobile})}
+function addItem(){const name=prompt("Name of game/equipment:");if(!name)return;const cat=prompt("Category (Board Game, Card Game, Console, Controller, Equipment):")||"",total=parseInt(prompt("Quantity owned:","1")),
+  ver=confirm("Should this item need a verification call when issued?\n\nOK = Yes, Cancel = No");if(total>0)call("add",{name:name.trim(),cat:cat.trim(),total,ver})}
 function setQ(id,cur){const total=parseInt(prompt("New total quantity:",cur));if(total>0)call("set",{id,total})}
-function csv(){const r=[["Item","Name","Roll No","Mobile","Issued At","Returned At"],...S.issues.map(x=>[x.item,x.name,x.roll,"'"+x.mobile,x.at,x.ret])];
+function csv(){const r=[["Item","Name","Roll No","Mobile","Issued At","Returned At","Verified","Condition","Note"],...S.issues.map(x=>[x.item,x.name,x.roll,"'"+x.mobile,x.at,x.ret,x.vf=="P"?"Pending":x.vf||"",x.cond||"",x.note||""])];
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.map(l=>l.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(",")).join("\n")],{type:"text/csv"}));a.download="gambit_issues.csv";a.click()}
 
 if(API_URL)setInterval(()=>{if(document.hidden||!(me||admin)||document.body.classList.contains("busy"))return;
-  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"get",pin})}).then(r=>r.json()).then(j=>{if(!j.error&&JSON.stringify(j)!==JSON.stringify(S)){S=j;draw()}}).catch(()=>{})},30000);
+  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"get",pin,roll:me?me.roll:""})}).then(r=>r.json()).then(j=>{const n=fx(j);if(!j.error&&JSON.stringify(n)!==JSON.stringify(S)){S=n;draw()}}).catch(()=>{})},30000);
 if(!API_URL)local("get",{});else call("get");
 show();
 </script></body></html>
