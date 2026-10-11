@@ -60,6 +60,10 @@ td:empty{display:none}td[data-l=""]{justify-content:flex-end;flex-wrap:wrap}td[d
 .ev .eh{flex-direction:column;align-items:flex-start}.cd,.cd0{min-height:46px;padding:2px}.ce{font-size:10px;padding:0 2px}
 .bd{grid-template-columns:repeat(2,1fr)}.av{grid-template-columns:repeat(4,1fr)}.tabs button{padding:10px 14px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.lt{display:flex;margin-bottom:14px}.lt button{flex:1;background:var(--p);color:var(--m);border:0;padding:10px;font:700 14px Rajdhani;cursor:pointer;letter-spacing:1px;border-bottom:2px solid transparent}.lt .on{background:var(--c);color:var(--cy);border-bottom-color:var(--cy)}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px}.mc{aspect-ratio:1;font-size:30px;background:var(--p);border:2px solid #34346a;color:var(--t);cursor:pointer}.mc.on{background:var(--c);border-color:var(--cy)}.mc.ok{border-color:var(--g);opacity:.55}
+.tg{display:grid;grid-template-columns:repeat(3,minmax(70px,96px));gap:6px}.tg button{height:96px;font:900 40px Orbitron;padding:0}
+.rb{height:220px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font:700 22px Orbitron;cursor:pointer;user-select:none;background:#12122a;border:2px solid #34346a}
 .lk{cursor:pointer;color:var(--cy);border-bottom:1px dotted var(--cy)}
 #mo{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
 select{width:100%;background:#0d0d22;border:1px solid #34346a;color:var(--t);padding:10px;font:inherit}
@@ -73,32 +77,32 @@ h3{font:700 14px Orbitron;color:var(--cy);margin:4px 0 10px;letter-spacing:1px}.
 const API_URL = "";            // paste your Google Apps Script web-app URL here (see README)
 const LOCAL_PIN = "gambit123"; // admin PIN for demo (browser-only) mode
 // ======================
-let S={items:[],issues:[],events:[],signups:[],reqs:[],reviews:[],brackets:[],players:[],seasons:[],teams:[],polls:[],cfg:{},waitlist:[],roster:[],feedback:[]},me=null,admin=false,pin="",tab="inv",q="",vt="";
-const $=s=>document.querySelector(s),now=()=>new Date().toLocaleString("sv");
+let S={items:[],issues:[],events:[],signups:[],reqs:[],reviews:[],brackets:[],players:[],seasons:[],teams:[],polls:[],cfg:{},waitlist:[],roster:[],feedback:[],members:[],sms:false,scores:[]},me=null,admin=false,pin="",tab="inv",q="",vt="";
+const $=s=>document.querySelector(s),now=()=>{const d=new Date(),p=n=>String(n).padStart(2,"0");return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const act=n=>S.issues.filter(x=>x.item==n&&!x.ret).length;
 const ROLL_RE=/^MBAA?\d{5}$/; // MBA12345 or MBAA12345 (change \d{5} if your numbers have a different length)
 const validMobile=m=>/^[6-9]\d{9}$/.test(m)&&!/^(\d)\1{9}$/.test(m)&&!/^(0123456789|1234567890|9876543210)$/.test(m);
 function cleanMobile(el){let v=el.value.replace(/\D/g,"");if(v.length>10&&v.startsWith("91"))v=v.slice(2);el.value=v.slice(0,10)}
-const fx=j=>({events:[],signups:[],reqs:[],reviews:[],brackets:[],players:[],seasons:[],teams:[],polls:[],cfg:{},waitlist:[],roster:[],feedback:[],...j}),imgOK=u=>/^(https?:\/\/|images\/)/.test(u||"");
+const IDS=["items","issues","events","signups","reqs","reviews","brackets","seasons","teams","polls","waitlist","roster","feedback","scores"],
+sid=v=>String(v).replace(/[^\w~-]/g,""),   // safe for use inside a click handler
+fx=j=>{const o={items:[],issues:[],events:[],signups:[],reqs:[],reviews:[],brackets:[],players:[],seasons:[],teams:[],polls:[],cfg:{},waitlist:[],roster:[],feedback:[],members:[],sms:false,scores:[],...j};IDS.forEach(k=>{o[k]=(Array.isArray(o[k])?o[k]:[]).filter(x=>x&&/^\d{1,16}$/.test(String(x.id))).map(x=>({...x,id:Number(x.id)}))});return o},imgOK=u=>/^(https?:\/\/|images\/)/.test(u||"");
 const AV=["🎮", "👾", "🤖", "🦊", "🐉", "🦁", "🐺", "🚀", "🎯", "🧠", "🔥", "⚡", "👑", "🦄", "🐼", "🐯"];
 const DEF_ABOUT="GAMBIT is our college gaming club — board games, consoles, tournaments and good company. Everyone is welcome!\n\nCommittee contacts: (admin: tap Edit to add names and numbers)",
 DEF_RULES="1. Log in with your own name, roll number and mobile number.\n2. Return items on time and in the condition you received them.\n3. Report damage or missing parts honestly when returning.\n4. Some items need a verification call from the club.\n5. Be respectful at events: no cheating, no toxicity.\n6. Fair play: XP comes from taking part, not from gaming the system.";
 const pyr=r=>S.players.find(p=>p.roll==r),tn=(r,n)=>{const p=pyr(r);return p?p.av+" "+p.tag:n},bannerHTML=()=>{const c=S.cfg||{};return(c.room?`<div class="room ${c.room=="Open"?"ok":"no"}">${c.room=="Open"?"● CLUB ROOM IS OPEN":"✖ CLUB ROOM IS CLOSED"}</div>`:"")+(c.banner?'<div class="bn">📢 '+esc(c.banner)+'</div>':"")};
 const COND=["Good","Damaged","Missing parts"];let lp="m",evView="l",cm=now().slice(0,7);
-const pend=()=>S.issues.filter(x=>!x.ret&&x.vf=="P").length;
+const pend=()=>S.members.filter(m=>m.verified!="Yes").length;
 const ICON={"board game":"♟","card game":"♠","console":"▣","controller":"◉","equipment":"⚙"};
 
 function local(a,p){
-  S=JSON.parse(localStorage.gambit||"null")||{items:[["Chess Set","Board Game",3],["Carrom Board","Board Game",2],["Monopoly","Board Game",2],["Uno Cards","Card Game",4],["Catan","Board Game",1],["Jenga","Board Game",2],["PS5 Console","Console",1],["PS5 Controller","Controller",4],["Xbox Controller","Controller",2],["Nintendo Switch","Console",1],["Gaming Headset","Equipment",3],["HDMI Cable","Equipment",3],["Gaming Mouse","Equipment",2],["Mechanical Keyboard","Equipment",2]].map((r,i)=>({id:i+1,name:r[0],cat:r[1],total:r[2],ver:/PS5 Console|Switch/.test(r[0])})),issues:[]};
+  S=JSON.parse(localStorage.gambit||"null")||{items:[["Chess Set","Board Game",3],["Carrom Board","Board Game",2],["Monopoly","Board Game",2],["Uno Cards","Card Game",4],["Catan","Board Game",1],["Jenga","Board Game",2],["PS5 Console","Console",1],["PS5 Controller","Controller",4],["Xbox Controller","Controller",2],["Nintendo Switch","Console",1],["Gaming Headset","Equipment",3],["HDMI Cable","Equipment",3],["Gaming Mouse","Equipment",2],["Mechanical Keyboard","Equipment",2]].map((r,i)=>({id:i+1,name:r[0],cat:r[1],total:r[2]})),issues:[]};
   const adm=p.pin===LOCAL_PIN,need=()=>{if(!adm)throw Error("Admin PIN required")},it=S.items.find(i=>i.id==p.id);
-  if(a=="issue"){const i=S.items.find(i=>i.name==p.item);if(!i||i.repair)throw Error("This item is under repair.");if(i.total-act(i.name)<1)throw Error("All copies are already issued.");S.waitlist=(S.waitlist||[]).filter(w=>!(w.item==i.name&&w.roll==p.roll));S.issues.push({id:Date.now(),item:i.name,name:p.name,roll:p.roll,mobile:p.mobile,at:now(),ret:"",vf:i.ver?"P":""})}
+  if(a=="issue"){const i=S.items.find(i=>i.name==p.item);if(!i)throw Error("Item not found.");if(i.repair)throw Error("This item is under repair.");if(i.total-act(i.name)<1)throw Error("All copies are already issued.");S.waitlist=(S.waitlist||[]).filter(w=>!(w.item==i.name&&w.roll==p.roll));S.issues.push({id:Date.now(),item:i.name,name:p.name,roll:p.roll,mobile:p.mobile,at:now(),ret:""})}
   if(a=="ret"){const x=S.issues.find(i=>i.id==p.id&&!i.ret);if(x){if(!adm&&x.roll!=p.roll)throw Error("You can only return your own items.");x.ret=now();x.cond=COND.includes(p.cond)?p.cond:"Good";x.note=String(p.note||"").slice(0,120)}}
-  if(a=="add"){need();if(S.items.some(i=>i.name.toLowerCase()==p.name.toLowerCase()))throw Error("Item already exists.");S.items.push({id:Math.max(0,...S.items.map(i=>i.id))+1,name:p.name,cat:p.cat,total:p.total,ver:!!p.ver})}
+  if(a=="add"){need();if(S.items.some(i=>i.name.toLowerCase()==p.name.toLowerCase()))throw Error("Item already exists.");S.items.push({id:Math.max(0,...S.items.map(i=>i.id))+1,name:p.name,cat:p.cat,total:p.total})}
   if(a=="set"){need();if(p.total<act(it.name))throw Error("Less than the number currently issued.");it.total=p.total}
   if(a=="del"){need();if(act(it.name))throw Error("Item is currently issued.");S.items=S.items.filter(i=>i!=it)}
-  if(a=="flag"){need();it.ver=!!p.ver}
-  if(a=="verify"){need();const x=S.issues.find(i=>i.id==p.id);if(x)x.vf=now()}
   if(a=="cond"){need();const x=S.issues.find(i=>i.id==p.id);if(x&&x.ret){x.cond=COND.includes(p.cond)?p.cond:"Good";x.note=String(p.note||"").slice(0,120)}}
   const E=S.events=S.events||[],G=S.signups=S.signups||[],R=S.reqs=S.reqs||[],cl=(v,n)=>String(v||"").trim().slice(0,n);
   if(a=="info"){need();Object.assign(it,{players:cl(p.players,20),time:cl(p.time,20),photo:imgOK(p.photo)?cl(p.photo,300):"",info:cl(p.info,300),glink:/^https:\/\//.test(p.glink||"")?cl(p.glink,300):"",guide:cl(p.guide,600)})}
@@ -138,57 +142,98 @@ function local(a,p){
   if(a=="fbAdd"){const m=cl(p.msg,500);if(m.length<5)throw Error("Please write a bit more (at least 5 characters).");if(!["Problem","Suggestion","Other"].includes(p.type))throw Error("Pick a type.");FB.push({id:Date.now(),type:p.type,item:cl(p.item,80),msg:m,name:p.pname,roll:p.roll,mobile:p.mobile,at:now(),status:"New",reply:""})}
   if(a=="fbStatus"){need();const x=FB.find(x=>x.id==p.id);if(x){if(["New","In progress","Resolved"].includes(p.status))x.status=p.status;if(p.reply!=null)x.reply=cl(p.reply,200)}}
   if(a=="fbDel"){need();S.feedback=FB.filter(x=>x.id!=p.id)}
+  const MB=JSON.parse(localStorage.gmem||"[]"),mbSave=()=>localStorage.gmem=JSON.stringify(MB);
+  if(a=="mbApprove"){need();const m=MB.find(x=>x.roll==p.roll);if(m){m.verified="Yes";mbSave()}}
+  if(a=="mbDel"){need();const k=MB.findIndex(x=>x.roll==p.roll);if(k>=0){MB.splice(k,1);mbSave()}}
+  if(a=="mbReset"){need();const m=MB.find(x=>x.roll==p.roll);if(!m||String(p.pw||"").length<6)throw Error("Password must be at least 6 characters.");m.pw=p.pw;mbSave()}
+  if(a=="pwChange"){const m=MB.find(x=>x.roll==p.roll);if(!m||m.pw!==p.oldPw)throw Error("Current password is wrong.");if(String(p.newPw||"").length<6)throw Error("New password must be at least 6 characters.");m.pw=p.newPw;mbSave()}
+  const SC=S.scores=S.scores||[];
+  if(a=="scoreSet"){const g=GM[p.game],v=Math.round(+p.score);if(!g||!(v>=g.min&&v<=g.max))throw Error("Invalid score.");const o=SC.find(x=>x.roll==p.roll&&x.game==p.game);if(!o)SC.push({id:Date.now(),roll:p.roll,name:p.name,game:p.game,score:v,at:now()});else if(g.hi?v>o.score:v<o.score){o.score=v;o.at=now()}}
+  if(a=="backupNow"){need();S.cfg.lastBackup=now()}
+  S.members=MB.map(m=>({roll:m.roll,name:m.name,mobile:m.mobile,verified:m.verified,at:m.at}));S.sms=true;
   if(a=="auth")need();
   localStorage.gambit=JSON.stringify(S)}
 
+let inflight=0;const busy=d=>{inflight+=d;document.body.classList.toggle("busy",inflight>0)};
 async function call(a,p={}){
-  document.body.classList.add("busy");
+  busy(1);
   try{
-    const body={pin,roll:me?me.roll:"",...p};
-    if(API_URL){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:a,...body})}),j=await r.json();if(j.error)throw Error(j.error);S=fx(j)}
+    const body={pin,roll:me?me.roll:"",token:me?me.token:"",...p};
+    if(API_URL){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:a,...body})}),j=await r.json();if(j.error)throw Error(j.error);S=fx(j);if(me&&S.authed===false){expire();return false}}
     else local(a,body);
-  }catch(e){alert(e.message);return false}
-  finally{document.body.classList.remove("busy")}
-  if(me||admin)draw();else if($("#bnr"))$("#bnr").innerHTML=bannerHTML();return true}
+  }catch(e){if(/log in again/i.test(e.message)){expire();return false}alert(e.message);return false}
+  finally{busy(-1)}
+  if(me||admin)draw();else{if($("#bnr"))$("#bnr").innerHTML=bannerHTML();if($("#fpl"))$("#fpl").innerHTML=fpHTML()}return true}
 
-function login(){
-  const name=$("#n").value.trim().replace(/\s+/g," "),roll=$("#r").value.trim().toUpperCase(),mobile=$("#m").value.replace(/\D/g,"");
+let lt="in",ap={};
+async function authCall(a,p){
+  busy(1);
+  try{
+    if(API_URL){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:a,...p})}),j=await r.json();if(j.error)throw Error(j.error);return j.auth}
+    return localAuth(a,p)}
+  catch(e){alert(e.message);return null}
+  finally{busy(-1)}}
+async function doLogin(){
+  const roll=$("#r").value.trim().toUpperCase(),password=$("#pw").value;
+  if(!ROLL_RE.test(roll))return alert("Enter your roll number, e.g. MBA12345 or MBAA12345.");
+  if(!password)return alert("Enter your password.");
+  const au=await authCall("login",{roll,password});if(au)afterAuth(au,{roll,pw:password})}
+async function doSignup(){
+  const name=$("#n").value.trim().replace(/\s+/g," "),roll=$("#r").value.trim().toUpperCase(),mobile=$("#m").value.replace(/\D/g,""),password=$("#pw").value;
   if(!/^[A-Za-z][A-Za-z .'-]{1,59}$/.test(name))return alert("Please enter your full name (letters only).");
   if(!ROLL_RE.test(roll))return alert("Invalid roll number. Format: MBA12345 or MBAA12345.");
   if(!validMobile(mobile))return alert("Enter a valid 10-digit mobile number (it must start with 6, 7, 8 or 9).");
-  me={name,roll,mobile};admin=false;pin="";tab="inv";draw();call("get")}
+  if(password.length<6)return alert("Choose a password of at least 6 characters.");
+  if(password!==$("#pw2").value)return alert("The two passwords don't match.");
+  const au=await authCall("signup",{name,roll,mobile,password});if(au)afterAuth(au,{roll,pw:password})}
+function afterAuth(au,c){if(au.step=="ok")return startSession(au);ap={...c,mobile:au.mobile,note:au.note};lt=au.step;show();if(au.note&&au.step=="otp")alert(au.note)}
+async function doOtp(){const otp=$("#otp").value.trim();if(!/^\d{6}$/.test(otp))return alert("Enter the 6-digit code.");const au=await authCall("verifyOtp",{roll:ap.roll,otp});if(au)startSession(au)}
+async function doResend(){const au=await authCall("resendOtp",{roll:ap.roll,password:ap.pw});if(au){if(au.step=="pending"){lt="pend";ap.note=au.note}else{ap.mobile=au.mobile;alert("A new code was sent.")}show()}}
+function startSession(au){me={...au.member,token:au.token};admin=false;pin="";tab="inv";lt="in";ap={};localStorage.gambit_session=JSON.stringify(me);draw();call("get")}
+function expire(){stopGame();localStorage.removeItem("gambit_session");me=null;admin=false;pin="";S=fx({cfg:S.cfg,sms:S.sms});lt="in";ap={};alert("Your session expired — please log in again.");show()}
+
 async function adminLogin(){const p=prompt("Enter admin PIN:");if(p===null)return;pin=p;admin=true;me=null;tab="inv";
   if(!await call("auth"))logout()}
-function logout(){me=null;admin=false;pin="";q="";show()}
+function logout(){stopGame();me=null;admin=false;pin="";q="";localStorage.removeItem("gambit_session");S=fx({cfg:S.cfg,sms:S.sms});lt="in";ap={};show()}
 
+const fpHTML=()=>S.sms?`<a href="#" onclick="lt='fp';show();return false" style="color:var(--cy)">Forgot password?</a>`:"Forgot your password? Ask a committee member to reset it.";
+function loginCard(){
+  const f=(id,label,type="text",extra="")=>`<label>${label}</label><input id="${id}" type="${type}" ${extra}>`;
+  const roll=f("r","ROLL NUMBER","text",`placeholder="MBA12345" maxlength="9" autocapitalize="characters" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"`);
+  const btn=(t,fn,k="g")=>`<button class="b ${k} w" style="font-size:14px;padding:8px;margin-top:8px" onclick="${fn}">${t}</button>`;
+  const tabs=`<div class="lt"><button class="${lt=="in"?"on":""}" onclick="lt='in';show()">LOG IN</button><button class="${lt=="up"?"on":""}" onclick="lt='up';show()">SIGN UP</button></div>`;
+  if(lt=="in")return tabs+roll+f("pw","PASSWORD","password",'autocomplete="current-password"')+`<button class="b w" id="goBtn" onclick="doLogin()">▶ LOG IN</button><div id="fpl" class="note" style="margin:10px 0 0">${fpHTML()}</div>`+btn("★ Club admin login","adminLogin()");
+  if(lt=="up")return tabs+f("n","FULL NAME","text",'autocomplete="name"')+roll+f("m","MOBILE NUMBER","text",'inputmode="numeric" placeholder="10-digit number" oninput="cleanMobile(this)"')+f("pw","CREATE PASSWORD (6+ CHARACTERS)","password",'autocomplete="new-password"')+f("pw2","CONFIRM PASSWORD","password")+`<p class="note" style="margin:10px 0 0;text-align:left">You verify your mobile number once. After that you just log in — no more checks when you borrow items.</p><button class="b w" id="goBtn" onclick="doSignup()">✔ CREATE ACCOUNT</button>`;
+  if(lt=="otp")return `<h2>✉ VERIFY YOUR MOBILE</h2><p style="text-align:center;margin:0 0 8px">We sent a 6-digit code to <b>${esc(ap.mobile||"your phone")}</b>.</p>`+f("otp","VERIFICATION CODE","text",'inputmode="numeric" maxlength="6" autocomplete="one-time-code"')+`<button class="b w" id="goBtn" onclick="doOtp()">✔ VERIFY</button>`+btn("Resend code","doResend()")+btn("← Back","lt='in';show()");
+  if(lt=="fp")return `<h2>🔑 FORGOT PASSWORD</h2><p style="text-align:center;margin:0 0 8px;color:var(--m)">Enter your roll number and we'll text a code to the mobile number you signed up with.</p>`+roll+`<button class="b w" id="goBtn" onclick="doForgot()">✔ SEND CODE</button>`+btn("← Back","lt='in';show()");
+  if(lt=="fp2")return `<h2>🔑 RESET PASSWORD</h2><p style="text-align:center;margin:0 0 8px">If <b>${esc(ap.roll||"")}</b> has an account, a 6-digit code is on its way by SMS.</p>`+f("otp","6-DIGIT CODE","text",'inputmode="numeric" maxlength="6" autocomplete="one-time-code"')+f("pw","NEW PASSWORD (6+ CHARACTERS)","password",'autocomplete="new-password"')+f("pw2","CONFIRM NEW PASSWORD","password")+`<button class="b w" id="goBtn" onclick="doPwReset()">✔ RESET &amp; LOG IN</button>`+btn("← Back","lt='in';show()");
+  return `<h2>⏳ ALMOST THERE</h2><p style="text-align:center;line-height:1.5">Your account is created. A committee member will verify your mobile number — you can log in as soon as you're approved.</p>${ap.note?`<p class="note">${esc(ap.note)}</p>`:""}<button class="b w" onclick="lt='in';show()">← Back to log in</button>`}
 function show(){
   if(me||admin)return draw();
-  $("#app").innerHTML=`<div id="bnr">${bannerHTML()}</div><div class="logo">GAMBIT</div><div class="sub">GAMING CLUB · INVENTORY</div>
-  <div class="card"><h2>◆ PLAYER LOGIN ◆</h2>
-  <label>PLAYER NAME</label><input id="n" autocomplete="name"><label>ROLL NUMBER</label><input id="r" placeholder="MBA12345" maxlength="9" autocapitalize="characters" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"><label>MOBILE NUMBER</label><input id="m" inputmode="numeric" placeholder="10-digit number" oninput="cleanMobile(this)">
-  <button class="b w" onclick="login()">▶ PRESS START</button><button class="b g w" style="font-size:14px;padding:8px;margin-top:8px" onclick="adminLogin()">★ Club admin login</button></div>
-  <div class="note">${API_URL?"":"Demo mode: data is saved only in this browser."}</div>`;
-  $("#app").onkeydown=e=>{if(e.key=="Enter"&&$("#m"))login()}}
+  $("#app").innerHTML=`<div id="bnr">${bannerHTML()}</div><div class="logo">GAMBIT</div><div class="sub">GAMING CLUB · INVENTORY</div><div class="card">${loginCard()}</div><div class="note">${API_URL?"":"Demo mode: data is saved only in this browser. Verification codes are shown on screen."}</div>`;
+  $("#app").onkeydown=e=>{if(e.key=="Enter"){const b=$("#goBtn");if(b)b.click()}};
+  const i=document.querySelector("#app input");if(i&&i.focus)i.focus()}
 
 function statHTML(){
-  const tot=S.items.reduce((a,i)=>a+i.total,0),out=S.issues.filter(x=>!x.ret).length,mine=me?S.issues.filter(x=>!x.ret&&x.roll==me.roll).length:S.issues.length;
+  const out=S.issues.filter(x=>!x.ret).length,mine=me?S.issues.filter(x=>!x.ret&&x.roll==me.roll).length:S.issues.length;
   return [["TITLES",S.items.length,"--pu"],["AVAILABLE",S.items.reduce((a,i)=>a+(i.repair?0:Math.max(0,i.total-act(i.name))),0),"--g"],["ISSUED OUT",out,"--pk"],[admin?"ALL-TIME ISSUES":"WITH YOU",mine,"--cy"]].map(s=>`<div class="st" style="border-color:var(${s[2]})"><b style="color:var(${s[2]})">${s[1]}</b><span>${s[0]}</span></div>`).join("")}
 function tabHTML(){
-  return [["inv","♟ INVENTORY"],["out",admin?"◉ ALL ISSUED"+(pend()?` (${pend()} to verify)`:""):"◉ MY ISSUED (RETURN)"],["his",admin?"☰ FULL HISTORY":"☰ MY HISTORY"],["lb","★ LEADERBOARD"],["ev","◈ EVENTS"],["rq","✚ REQUESTS"],["pf","⚑ PROFILE"],["tm","⚔ TEAMS"],["ru","ℹ ABOUT & RULES"],["rs","🗓 DUTY"],["fb","✉ FEEDBACK"]].map(t=>`<button class="${t[0]==tab?"on":""}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join("")}
+  return [["inv","♟ INVENTORY"],["out",admin?"◉ ALL ISSUED":"◉ MY ISSUED (RETURN)"],["his",admin?"☰ FULL HISTORY":"☰ MY HISTORY"],["lb","★ LEADERBOARD"],["ar","🎮 ARCADE"],["ev","◈ EVENTS"],["rq","✚ REQUESTS"],["pf","⚑ PROFILE"],["tm","⚔ TEAMS"],["ru","ℹ ABOUT & RULES"],["rs","🗓 DUTY"],["fb","✉ FEEDBACK"]].concat(admin?[["mb","👤 MEMBERS"+(pend()?` (${pend()} new)`:"")]]:[]).map(t=>`<button class="${t[0]==tab?"on":""}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join("")}
 function shell(){vt="";
   $("#app").innerHTML=`<div id="bnr">${bannerHTML()}</div><div class="top"><div class="o">GAMBIT <small>GAMING CLUB</small></div>
   <div class="chip" style="color:${admin?"var(--pk)":"var(--t)"}">${admin?"★ ADMIN MODE":"◆ "+esc(me.name)+" · "+esc(me.roll)+" · "+esc(me.mobile)}</div>
-  ${admin?'<button class="b g" onclick="editBanner()">📢 Banner</button><button class="b g" onclick="toggleRoom()">🚪 Room</button>':""}<button class="b g" onclick="call('get')">↻</button><button class="b d" onclick="logout()">⏻ Log out</button></div>
+  ${admin?'<button class="b g" onclick="editBanner()">📢 Banner</button><button class="b g" onclick="toggleRoom()">🚪 Room</button><button class="b g" onclick="backupNow()">💾 Backup</button>':""}<button class="b g" onclick="call('get')">↻</button><button class="b d" onclick="logout()">⏻ Log out</button></div>
   <div class="stats" id="sx">${statHTML()}</div><div class="tabs" id="tb">${tabHTML()}</div><div class="panel" id="v"></div>`;view()}
 function draw(){if(!$("#v"))return shell();$("#bnr").innerHTML=bannerHTML();$("#sx").innerHTML=statHTML();$("#tb").innerHTML=tabHTML();view()}
 function view(){
-  if(["lb","ev","rq","pf","tm","ru","rs","fb"].includes(tab)){vt=tab;return({lb,ev:evs,rq:rqs,pf,tm:tms,ru,rs:rst,fb:fbs})[tab]()}
+  if(vt!=tab)stopGame();
+  if(tab=="ar"&&vt==tab&&gm)return;
+  if(["lb","ev","rq","pf","tm","ru","rs","fb","mb","ar"].includes(tab)){vt=tab;return({lb,ev:evs,rq:rqs,pf,tm:tms,ru,rs:rst,fb:fbs,mb:mbs,ar:arc})[tab]()}
   if(vt==tab&&$("#t"))return rows();vt=tab;
   $("#v").innerHTML=tab=="inv"?`<div class="bar"><input placeholder="Search…" value="${esc(q)}" oninput="q=this.value;clearTimeout(window.st);window.st=setTimeout(rows,150)">${admin?`<div class="sp"><button class="b" onclick="addItem()">＋ Add</button><button class="b g" onclick="csv()">⇩ Excel (CSV)</button></div>`:`<span style="color:var(--m);font-size:14px">Tap ▶ Issue to borrow an item</span>`}</div><div class="tw"><table id="t"></table></div>`:`<div class="tw"><table id="t"></table></div>`;rows()}
 
 const condTxt=x=>!x.ret||!x.cond?"—":(x.cond=="Good"?'<b class="ok">✔ Good</b>':'<b class="no">⚠ '+esc(x.cond)+'</b>')+(x.note?' <small>'+esc(x.note)+'</small>':"");
 const dmg=i=>{if(!admin)return"";const n=S.issues.filter(z=>z.item==i.name&&z.cond&&z.cond!="Good").length;return n?` <small class="no">⚠ ${n} report${n>1?"s":""}</small>`:""};
-const vfTxt=x=>!x.vf?"—":x.vf=="P"?'<b class="pen">⏳ Call pending</b>':'<b class="ok">✔ '+esc(x.vf)+'</b>';
 function rows(){
   const t=$("#t"),mineOnly=x=>admin||x.roll==me.roll,byNew=(a,b)=>b.at.localeCompare(a.at);let hd,body;
   if(tab=="inv"){
@@ -196,24 +241,28 @@ function rows(){
     hd=["Item","Category","Total","Available","Status",""];
     body=L.map(i=>{const av=i.total-act(i.name),id=i.id,rep=i.repair,wl=S.waitlist.filter(w=>w.item==i.name).sort((a,b)=>a.id-b.id),pos=me?wl.findIndex(w=>w.roll==me.roll)+1:0;
       const st=rep?'<b class="pen">🔧 UNDER REPAIR</b>':av>0?'<b class="ok">● AVAILABLE</b>'+(pos&&pos<=av?' <b class="pen">🔔 your turn</b>':""):'<b class="no">✖ ISSUED</b>'+(wl.length?` <small class="pen">⏳ ${wl.length} waiting</small>`:"");
-      const bt=admin?`<button class="b g" title="Toggle under repair" onclick="call('repair',{id:${id}})">🔧</button> <button class="b g" title="Edit details" onclick="editInfo(${id})">ℹ</button> <button class="b g" title="Toggle call verification" onclick="call('flag',{id:${id},ver:${!i.ver}})">☎</button> <button class="b g" onclick="setQ(${id},${i.total})">✎</button> <button class="b d" onclick="call('del',{id:${id}})">✖</button>`:rep||!me?"":av>0?`<button class="b" onclick="issue(${id})">▶ Issue</button>`:pos?`<button class="b g" onclick="leaveWl(${id})">Leave waitlist (#${pos})</button>`:`<button class="b g" onclick="joinWl(${id})">⏳ Join waitlist</button>`;
-      return['<span class="lk" onclick="showItem('+id+')">'+esc(i.name)+'</span>'+(i.ver?' <small class="pen">☎ call-verified</small>':"")+dmg(i)+stars(i)+(i.guide||i.glink?' <small title="Has a how-to-play guide">📖</small>':""),(ICON[i.cat.toLowerCase()]||"◆")+" "+esc(i.cat),i.total,rep?"—":Math.max(av,0),st,bt]})}
+      const bt=admin?`<button class="b g" title="Toggle under repair" onclick="call('repair',{id:${id}})">🔧</button> <button class="b g" title="Edit details" onclick="editInfo(${id})">ℹ</button> <button class="b g" onclick="setQ(${id},${i.total})">✎</button> <button class="b d" onclick="call('del',{id:${id}})">✖</button>`:rep||!me?"":av>0?`<button class="b" onclick="issue(${id})">▶ Issue</button>`:pos?`<button class="b g" onclick="leaveWl(${id})">Leave waitlist (#${pos})</button>`:`<button class="b g" onclick="joinWl(${id})">⏳ Join waitlist</button>`;
+      return['<span class="lk" onclick="showItem('+id+')">'+esc(i.name)+'</span>'+dmg(i)+stars(i)+(i.guide||i.glink?' <small title="Has a how-to-play guide">📖</small>':""),(ICON[i.cat.toLowerCase()]||"◆")+" "+esc(i.cat),i.total,rep?"—":Math.max(av,0),st,bt]})}
   else if(tab=="out"){
-    hd=["Item","Name","Roll No","Mobile","Issued At","Verification",""];
-    body=S.issues.filter(x=>!x.ret&&mineOnly(x)).sort(byNew).map(x=>{const n=encodeURIComponent(String(x.mobile||"").replace(/\D/g,""));
-      return[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),vfTxt(x),
-      (admin&&x.vf=="P"?`<a class="b g" href="tel:${n}">☎ Call</a> <a class="b g" target="_blank" rel="noopener" href="https://wa.me/91${n}">WhatsApp</a> <button class="b" onclick="call('verify',{id:${x.id}})">✔ Verified</button> `:"")+`<button class="b" onclick="askCond(${x.id})">↩ Return</button>`]})}
+    hd=["Item","Name","Roll No","Mobile","Issued At",""];
+    body=S.issues.filter(x=>!x.ret&&mineOnly(x)).sort(byNew).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),`<button class="b" onclick="askCond(${x.id})">↩ Return</button>`])}
+  else if(tab=="mb"){
+    hd=["Name","Roll No","Mobile","Status","Joined",""];
+    body=[...S.members].sort((a,b)=>(a.verified=="Yes")-(b.verified=="Yes")||a.name.localeCompare(b.name)).map(m=>{const ok=m.verified=="Yes",n=encodeURIComponent(String(m.mobile).replace(/\D/g,"")),r=esc(m.roll),k=sid(m.roll);
+      return[esc(m.name),r,esc(m.mobile),ok?'<b class="ok">✔ Verified</b>':'<b class="pen">⏳ Awaiting verification</b>',esc(m.at),
+      (ok?"":`<a class="b g" href="tel:${n}">☎ Call</a> <a class="b g" target="_blank" rel="noopener" href="https://wa.me/91${n}">WhatsApp</a> <button class="b" onclick="call('mbApprove',{roll:'${k}'})">✔ Approve</button> `)+`<button class="b g" onclick="resetPw('${k}')">🔑 Reset</button> <button class="b d" onclick="delMember('${k}')">✖</button>`]})}
   else{
-    hd=["Item","Name","Roll No","Mobile","Issued At","Returned At","Verification","Condition"].concat(admin?[""]:[]);
-    body=S.issues.filter(mineOnly).sort(byNew).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),x.ret?esc(x.ret):'<b class="pen">Not returned</b>',vfTxt(x),condTxt(x)].concat(admin?[x.ret?`<button class="b g" title="Edit condition" onclick="askCond(${x.id},1)">✎</button>`:""]:[]))}
+    hd=["Item","Name","Roll No","Mobile","Issued At","Returned At","Condition"].concat(admin?[""]:[]);
+    body=S.issues.filter(mineOnly).sort(byNew).map(x=>[esc(x.item),esc(x.name),esc(x.roll),esc(x.mobile),esc(x.at),x.ret?esc(x.ret):'<b class="pen">Not returned</b>',condTxt(x)].concat(admin?[x.ret?`<button class="b g" title="Edit condition" onclick="askCond(${x.id},1)">✎</button>`:""]:[]))}
   t.innerHTML=body.length?`<tr>${hd.map(h=>`<th>${h}</th>`).join("")}</tr>`+body.map(r=>`<tr>${r.map((c,i)=>`<td data-l="${hd[i]||""}">${c}</td>`).join("")}</tr>`).join(""):`<tr><td class="em">Nothing here yet.</td></tr>`}
 
-function modal(html,w=420){const d=document.createElement("div");d.id="mo";
+function modal(html,w=420){mo();const d=document.createElement("div");d.id="mo";
   d.innerHTML=`<div class="card" style="width:100%;max-width:${w}px;max-height:90vh;overflow:auto">${html}<button class="b g w" style="font-size:14px;padding:8px;margin-top:10px" id="no">Close</button></div>`;
   document.body.appendChild(d);d.onclick=e=>{if(e.target==d||e.target.id=="no")d.remove()};return d}
 const stars=i=>{const r=S.reviews.filter(x=>x.item==i.name);return r.length?` <small class="pen">★${(r.reduce((a,x)=>a+x.stars,0)/r.length).toFixed(1)}</small>`:""};
 function showItem(id){
-  const i=S.items.find(i=>i.id==id),av=i.total-act(i.name),rv=S.reviews.filter(r=>r.item==i.name),avg=rv.length?rv.reduce((a,r)=>a+r.stars,0)/rv.length:0,
+  const i=S.items.find(i=>i.id==id);if(!i)return;
+  const av=i.total-act(i.name),rv=S.reviews.filter(r=>r.item==i.name),avg=rv.length?rv.reduce((a,r)=>a+r.stars,0)/rv.length:0,
   mine=me&&rv.find(r=>r.roll==me.roll),borrowed=me&&S.issues.some(x=>x.item==i.name&&x.roll==me.roll);
   const d=modal(`${imgOK(i.photo)?`<img src="${esc(i.photo)}" alt="" style="width:100%;max-height:220px;object-fit:cover;margin-bottom:12px" onerror="this.remove()">`:""}<h2 style="margin-bottom:8px">${esc(i.name).toUpperCase()}</h2>
   <p style="margin:4px 0">${esc(i.cat)} · ${i.repair?'<b class="pen">🔧 Under repair</b>':av>0?`<b class="ok">${av}/${i.total} available</b>`:'<b class="no">All issued</b>'}</p>
@@ -224,7 +273,7 @@ function showItem(id){
   ${rv.slice().sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,6).map(r=>`<div class="lr" style="display:block"><b class="pen">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</b> <b>${esc(tn(r.roll,r.name))}</b>${admin?` <button class="b d" style="padding:2px 8px" onclick="call('rvDel',{id:${r.id}});mo()">✖</button>`:""}<div style="color:var(--m);font-size:14px">${esc(r.text)}</div></div>`).join("")||'<div class="em" style="padding:10px">No reviews yet.</div>'}
   ${me?(borrowed?`<label>YOUR RATING</label><select id="rs">${[5,4,3,2,1].map(n=>`<option value="${n}"${mine&&mine.stars==n?" selected":""}>${"★".repeat(n)} (${n})</option>`).join("")}</select><label>REVIEW (OPTIONAL)</label><input id="rt" maxlength="150" value="${esc(mine?mine.text:"")}"><button class="b w" id="rsv" style="margin-top:10px">✔ SAVE REVIEW</button>`:'<p style="color:var(--m);font-size:14px">Borrow this item to leave a review.</p>'):""}`);
   const b=$("#rsv");if(b)b.onclick=()=>{const stars=+$("#rs").value,text=$("#rt").value.trim();d.remove();call("rvSet",{item:i.name,stars,text,name:me.name})}}
-function editInfo(id){const i=S.items.find(i=>i.id==id),d=modal(`<h2>ℹ ${esc(i.name).toUpperCase()}</h2><label>PLAYERS (e.g. 2-4)</label><input id="f1" maxlength="20" value="${esc(i.players)}"><label>PLAY TIME (e.g. 30-60 min)</label><input id="f2" maxlength="20" value="${esc(i.time)}"><label>PHOTO LINK (https://… or images/chess.jpg)</label><input id="f3" maxlength="300" value="${esc(i.photo)}"><label>DESCRIPTION</label><input id="f4" maxlength="300" value="${esc(i.info)}"><label>HOW-TO-PLAY LINK (https://…, e.g. a YouTube video)</label><input id="f5" maxlength="300" value="${esc(i.glink||"")}"><label>QUICK RULES</label><textarea id="f6" rows="4" maxlength="600">${esc(i.guide||"")}</textarea><button class="b w" id="sv">✔ SAVE</button>`);
+function editInfo(id){const i=S.items.find(i=>i.id==id);if(!i)return;const d=modal(`<h2>ℹ ${esc(i.name).toUpperCase()}</h2><label>PLAYERS (e.g. 2-4)</label><input id="f1" maxlength="20" value="${esc(i.players)}"><label>PLAY TIME (e.g. 30-60 min)</label><input id="f2" maxlength="20" value="${esc(i.time)}"><label>PHOTO LINK (https://… or images/chess.jpg)</label><input id="f3" maxlength="300" value="${esc(i.photo)}"><label>DESCRIPTION</label><input id="f4" maxlength="300" value="${esc(i.info)}"><label>HOW-TO-PLAY LINK (https://…, e.g. a YouTube video)</label><input id="f5" maxlength="300" value="${esc(i.glink||"")}"><label>QUICK RULES</label><textarea id="f6" rows="4" maxlength="600">${esc(i.guide||"")}</textarea><button class="b w" id="sv">✔ SAVE</button>`);
   $("#sv").onclick=()=>{const v=k=>$("#"+k).value.trim();d.remove();call("info",{id,players:v("f1"),time:v("f2"),photo:v("f3"),info:v("f4"),glink:v("f5"),guide:v("f6")})}}
 const mo=()=>{const d=$("#mo");if(d)d.remove()};
 const gcal=e=>{const m=String(e.date).match(/^(\d{4})-(\d\d)-(\d\d)(?:[ T](\d\d):(\d\d))?/);if(!m)return"#";const st=new Date(+m[1],+m[2]-1,+m[3],+(m[4]||9),+(m[5]||0)),en=new Date(st.getTime()+72e5),p2=n=>String(n).padStart(2,"0"),f=t=>`${t.getFullYear()}${p2(t.getMonth()+1)}${p2(t.getDate())}T${p2(t.getHours())}${p2(t.getMinutes())}00`;
@@ -278,7 +327,7 @@ function drawBr(id,d){
   const row=(r,k,i)=>{const m=R[r][k],won=ok(i)&&m[2]===i;return`<div class="bp${won?" w":""}"${admin&&ok(m[0])&&ok(m[1])?` onclick="pickW(${id},${r},${k},${i})"`:""}>${pn(i)}${won?" ✔":""}</div>`};
   const ch=R[R.length-1][0][2];
   modal(`<h2>🏆 ${esc(e?e.title:"Bracket").toUpperCase()}</h2>${ok(ch)?`<p class="pen" style="font-size:20px;margin:0 0 8px">🏆 CHAMPION: <b>${esc(d.players[ch].name)}</b></p>`:""}<div class="br">${R.map((rd,r)=>`<div class="bc"><h3>${nm(r)}</h3>${rd.map((m,k)=>`<div class="bm">${row(r,k,m[0])}${row(r,k,m[1])}</div>`).join("")}</div>`).join("")}</div>${admin?`<p style="color:var(--m);font-size:13px">Tap a player to mark them as the winner of that match (tap again to undo).</p><button class="b d" onclick="resetBr(${id})">Reset bracket</button>`:""}`,900)}
-function pickW(id,r,k,i){const d=bj(S.brackets.find(x=>x.ev==id)),m=d.rounds[r][k];m[2]=m[2]===i?null:i;settle(d);saveBr(id,d)}
+function pickW(id,r,k,i){const b=S.brackets.find(x=>x.ev==id),d=b&&bj(b);if(!d)return;const m=d.rounds[r][k];m[2]=m[2]===i?null:i;settle(d);saveBr(id,d)}
 function resetBr(id){if(confirm("Delete this bracket?")){mo();call("brDel",{id})}}
 
 /* ---- XP, levels and badges ---- */
@@ -298,7 +347,7 @@ function pf(){
   const c=cs(),rm=rollsMap(),board=Object.keys(rm).map(r=>({r,n:tn(r,rm[r]),xp:stat(r,c.start).xp,lvl:stat(r).lvl})).filter(p=>p.xp>0).sort((a,b)=>b.xp-a.xp),
   mine=me?stat(me.roll):null,T=l=>TITLES[Math.min(l-1,5)],my=me&&pyr(me.roll),rank=me?board.findIndex(p=>p.r==me.roll)+1:0,
   tro=me?S.seasons.flatMap(s=>(s.trophies||[]).filter(t=>t.roll==me.roll).map(t=>medal(t.rank-1)+" "+s.name)):[];
-  $("#v").innerHTML=(mine?`<div class="pc"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="font-size:42px">${my?my.av:"🎮"}</span><div><div class="o" style="font-size:20px;color:var(--cy)">${esc(my?my.tag:me.name)}</div><div style="color:var(--m);font-size:14px">${my?esc(me.name)+(my.fav?" · ♥ "+esc(my.fav):""):"No gamer tag yet — set one!"}</div></div><button class="b g" style="margin-left:auto" onclick="editTag()">✎ Gamer tag</button></div>
+  $("#v").innerHTML=(mine?`<div class="pc"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="font-size:42px">${my?my.av:"🎮"}</span><div><div class="o" style="font-size:20px;color:var(--cy)">${esc(my?my.tag:me.name)}</div><div style="color:var(--m);font-size:14px">${my?esc(me.name)+(my.fav?" · ♥ "+esc(my.fav):""):"No gamer tag yet — set one!"}</div></div><span style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap"><button class="b g" onclick="editTag()">✎ Gamer tag</button><button class="b g" onclick="changePw()">🔑 Password</button></span></div>
   <div style="margin-top:10px">LEVEL <b class="o" style="color:var(--pk);font-size:24px">${mine.lvl}</b> · ${T(mine.lvl).toUpperCase()}</div>
   <div class="bw" style="height:14px;margin:8px 0"><div class="bf" style="width:${(mine.xp-mine.lo)/(mine.hi-mine.lo)*100}%;background:linear-gradient(90deg,var(--cy),var(--pk))"></div></div>
   <div style="color:var(--m);font-size:14px">${mine.xp} XP lifetime · ${mine.hi-mine.xp} XP to level ${mine.lvl+1}</div>
@@ -337,7 +386,7 @@ function ru(){const t=k=>esc(S.cfg[k]||(k=="about"?DEF_ABOUT:DEF_RULES)).replace
   $("#v").innerHTML=`<div class="bar">${admin?'<div class="sp"><button class="b g" onclick="editTxt()">✎ Edit about &amp; rules</button></div>':""}</div><div class="lg"><div class="pc"><h3>◆ ABOUT GAMBIT</h3><p style="margin:0;line-height:1.5">${t("about")}</p></div><div class="pc"><h3>◆ CLUB RULES</h3><p style="margin:0;line-height:1.5">${t("rules")}</p></div></div><div class="pc"><h3>◆ GAME VAULT · GOOGLE DRIVE</h3>${vaultHTML()}</div>`}
 function editTxt(){const d=modal(`<h2>✎ ABOUT &amp; RULES</h2><label>ABOUT / CONTACTS</label><textarea id="t1" rows="5">${esc(S.cfg.about||DEF_ABOUT)}</textarea><label>RULES</label><textarea id="t2" rows="8">${esc(S.cfg.rules||DEF_RULES)}</textarea><label>GAME VAULT LINK (GOOGLE DRIVE, STARTS WITH https://)</label><input id="t3" maxlength="500" value="${esc(S.cfg.vault||"")}"><button class="b w" id="sv">✔ SAVE</button>`,520);
   $("#sv").onclick=async()=>{const v=[["about",$("#t1").value],["rules",$("#t2").value],["vault",$("#t3").value.trim()]];d.remove();for(const[k,x]of v)if(!await call("cfg",{key:k,value:x}))break}}
-const joinWl=id=>{const i=S.items.find(x=>x.id==id);call("wlJoin",{item:i.name,pname:me.name,mobile:me.mobile})},leaveWl=id=>{const i=S.items.find(x=>x.id==id);call("wlLeave",{item:i.name})};
+const joinWl=id=>{const i=S.items.find(x=>x.id==id);if(i)call("wlJoin",{item:i.name,pname:me.name,mobile:me.mobile})},leaveWl=id=>{const i=S.items.find(x=>x.id==id);if(i)call("wlLeave",{item:i.name})};
 function toggleRoom(){call("cfg",{key:"room",value:S.cfg.room=="Open"?"Closed":"Open"})}
 function rst(){
   const today=now().slice(0,10),L=S.roster.filter(x=>x.date>=today).sort((a,b)=>(a.date+a.slot).localeCompare(b.date+b.slot)),room=S.cfg.room;
@@ -356,10 +405,109 @@ function fbs(){
    ${admin?`<div class="eh" style="margin-top:8px"><select style="width:auto" onchange="call('fbStatus',{id:${x.id},status:this.value})">${["New","In progress","Resolved"].map(s=>`<option${s==x.status?" selected":""}>${s}</option>`).join("")}</select><span><button class="b g" onclick="replyFb(${x.id})">💬 Reply</button>${x.item&&x.type=="Problem"?` <button class="b g" onclick="repairByName(${x.id})">🔧 Mark under repair</button>`:""} <button class="b d" onclick="call('fbDel',{id:${x.id}})">✖</button></span></div>`:""}</div>`).join(""):'<div class="em">No reports yet.</div>')}
 function addFb(){const d=modal(`<h2>✉ NEW REPORT</h2><label>TYPE</label><select id="b1"><option>Problem</option><option>Suggestion</option><option>Other</option></select><label>ABOUT AN ITEM? (OPTIONAL)</label><select id="b2"><option value="">— none —</option>${[...S.items].sort((a,b)=>a.name.localeCompare(b.name)).map(i=>`<option value="${esc(i.name)}">${esc(i.name)}</option>`).join("")}</select><label>DETAILS</label><textarea id="b3" rows="5" maxlength="500" placeholder="What happened, or what would you like to see?"></textarea><button class="b w" id="sv">✔ SUBMIT</button>`);
   $("#sv").onclick=()=>call("fbAdd",{type:$("#b1").value,item:$("#b2").value,msg:$("#b3").value.trim(),pname:me.name,mobile:me.mobile}).then(ok=>{if(ok){d.remove();alert("Thanks! Your report was sent to the committee.")}})}
-function replyFb(id){const x=S.feedback.find(x=>x.id==id),t=prompt("Reply to this member (shown on their report):",x.reply||"");if(t!==null)call("fbStatus",{id,reply:t.trim()})}
-function repairByName(id){const x=S.feedback.find(x=>x.id==id),i=S.items.find(i=>i.name==x.item);if(i&&!i.repair)call("repair",{id:i.id})}
-function showPlayers(id){const e=S.events.find(e=>e.id==id),ps=S.signups.filter(g=>g.ev==id);
-  modal(`<h2>${esc(e.title).toUpperCase()}</h2>`+(ps.length?ps.map((g,i)=>`<div class="lr"><span class="rk">${i+1}</span><span style="flex:1">${esc(g.name)} · ${esc(g.roll)}</span><button class="b d" onclick="call('evLeave',{id:${id},roll:'${esc(g.roll)}'});document.getElementById('mo').remove()">✖</button></div>`).join(""):'<div class="em">Nobody yet.</div>'))}
+function replyFb(id){const x=S.feedback.find(x=>x.id==id);if(!x)return;const t=prompt("Reply to this member (shown on their report):",x.reply||"");if(t!==null)call("fbStatus",{id,reply:t.trim()})}
+function repairByName(id){const x=S.feedback.find(x=>x.id==id),i=x&&S.items.find(i=>i.name==x.item);if(i&&!i.repair)call("repair",{id:i.id})}
+function localAuth(a,p){
+  const M=JSON.parse(localStorage.gmem||"[]"),save=()=>localStorage.gmem=JSON.stringify(M),m=M.find(x=>x.roll==p.roll);
+  const ok=m=>({step:"ok",token:"demo",member:{roll:m.roll,name:m.name,mobile:m.mobile}});
+  const otp=m=>{m.otp=String(Math.floor(1e5+Math.random()*9e5));save();alert("DEMO MODE — your verification code is "+m.otp+"\n(On the live site this arrives by SMS.)");return{step:"otp",mobile:"XXXXXX"+m.mobile.slice(-4)}};
+  if(a=="signup"){if(m)throw Error("This roll number already has an account — please log in.");if(M.some(x=>x.mobile==p.mobile))throw Error("This mobile number is already registered.");const n={roll:p.roll,name:p.name,mobile:p.mobile,pw:p.password,verified:"No",at:now()};M.push(n);return otp(n)}
+  if(a=="forgot"){if(m&&m.verified=="Yes"){m.rp=String(Math.floor(1e5+Math.random()*9e5));save();alert("DEMO MODE — your reset code is "+m.rp+"\n(On the live site this arrives by SMS.)")}return{step:"reset"}}
+  if(a=="pwReset"){if(!m||!m.rp||m.rp!==String(p.otp))throw Error("Incorrect or expired code.");if(String(p.password||"").length<6)throw Error("Password must be at least 6 characters.");m.pw=p.password;m.verified="Yes";delete m.rp;save();return ok(m)}
+  if(!m||(a!="verifyOtp"&&m.pw!==p.password))throw Error(a=="verifyOtp"?"Account not found.":"Wrong roll number or password.");
+  if(a=="login")return m.verified=="Yes"?ok(m):otp(m);
+  if(a=="resendOtp")return otp(m);
+  if(a=="verifyOtp"){if(m.otp!==String(p.otp))throw Error("Incorrect code.");m.verified="Yes";delete m.otp;save();return ok(m)}}
+function resetPw(roll){const pw=prompt("New password for "+roll+" (6+ characters):");if(pw)call("mbReset",{roll,pw})}
+function delMember(roll){if(confirm("Remove the account "+roll+"? Their past records stay in the Sheet."))call("mbDel",{roll})}
+function mbs(){
+  $("#v").innerHTML=`<div class="bar"><span style="color:var(--m);font-size:14px">${S.sms?"New members verify their mobile with an SMS code. Anyone stuck can be approved here.":"New members wait here until you verify their number once (call or WhatsApp), then tap Approve."}<br>💾 Last backup: ${esc(S.cfg.lastBackup||"never")}</span></div><div class="tw"><table id="t"></table></div>`;rows()}
+function changePw(){const d=modal(`<h2>🔑 CHANGE PASSWORD</h2><label>CURRENT PASSWORD</label><input id="p1" type="password"><label>NEW PASSWORD (6+ CHARACTERS)</label><input id="p2" type="password"><label>CONFIRM NEW PASSWORD</label><input id="p3" type="password"><button class="b w" id="sv">✔ SAVE</button>`);
+  $("#sv").onclick=()=>{const a=$("#p1").value,b=$("#p2").value;if(b.length<6)return alert("Use at least 6 characters.");if(b!==$("#p3").value)return alert("The new passwords don't match.");call("pwChange",{oldPw:a,newPw:b}).then(ok=>{if(ok){d.remove();alert("Password changed.")}})}}
+/* ---- arcade ---- */
+const GM={snake:{n:"Snake",i:"🐍",d:"Eat, grow, and don't hit the walls or yourself.",hi:1,min:1,max:400,u:"pts"},
+ memory:{n:"Memory Match",i:"🧠",d:"Find all 8 pairs in as few moves as you can.",hi:0,min:8,max:300,u:"moves"},
+ reaction:{n:"Reaction Test",i:"⚡",d:"Tap the moment the box turns green. Average of 5 tries.",hi:0,min:80,max:3000,u:"ms"},
+ ttt:{n:"Tic-Tac-Toe",i:"❌",d:"Beat the computer and build the longest win streak.",hi:1,min:1,max:100,u:"in a row"}};
+let gm=null;
+const stopGame=()=>{if(gm&&gm.stop)gm.stop();gm=null},hud=t=>{const h=$("#sc");if(h)h.textContent=t},
+shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a},
+submit=(g,v)=>{if(me)call("scoreSet",{game:g,score:v})},
+best=g=>{const m={};S.scores.filter(x=>x.game==g).forEach(x=>{const o=m[x.roll];if(!o||(GM[g].hi?x.score>o.score:x.score<o.score))m[x.roll]=x});return Object.values(m).sort((a,b)=>GM[g].hi?b.score-a.score:a.score-b.score)};
+function arc(){
+  stopGame();
+  $("#v").innerHTML=`<div class="bar"><span style="color:var(--m);font-size:14px">Quick games for the club room. Best scores go on the boards${me?"":" (log in as a member to save yours)"}.</span></div><div class="lg">${Object.keys(GM).map(g=>{const G=GM[g],L=best(g),mine=me&&L.find(x=>x.roll==me.roll);
+    return `<div class="pc"><div class="eh"><b class="o" style="font-size:18px">${G.i} ${G.n}</b>${mine?`<span class="pen">Your best: ${mine.score} ${G.u}</span>`:""}</div><p style="color:var(--m);margin:6px 0">${G.d}</p>${L.slice(0,3).map((x,i)=>`<div class="lr"><span class="rk">${medal(i)}</span><span class="ln" style="flex:1">${esc(tn(x.roll,x.name))}</span><b>${x.score} ${G.u}</b></div>`).join("")||'<div class="em" style="padding:8px">No scores yet — be the first!</div>'}<button class="b w" style="margin-top:8px" onclick="playGame('${g}')">▶ PLAY</button></div>`}).join("")}</div>`}
+function playGame(g){
+  stopGame();
+  $("#v").innerHTML=`<div class="bar"><button class="b g" onclick="arc()">← Arcade</button><b class="o">${GM[g].i} ${GM[g].n}</b><span id="sc" class="pen"></span></div><div id="ga"></div>`;
+  ({snake:gSnake,memory:gMemory,reaction:gReaction,ttt:gTtt})[g]($("#ga"))}
+
+function gSnake(el){
+  const N=20,C=16;
+  el.innerHTML=`<canvas id="cv" width="${N*C}" height="${N*C}" style="max-width:100%;background:#0d0d22;border:2px solid var(--cy);touch-action:none"></canvas><div style="margin:10px 0"><button class="b g" data-d="0,-1">▲</button> <button class="b g" data-d="-1,0">◀</button> <button class="b g" data-d="0,1">▼</button> <button class="b g" data-d="1,0">▶</button></div><div id="msg" style="font-weight:700"></div>`;
+  const cv=$("#cv"),x=cv.getContext("2d");let s,d,q,f,sc,iv;
+  const spawn=()=>{do f=[Math.floor(Math.random()*N),Math.floor(Math.random()*N)];while(s.some(p=>p[0]==f[0]&&p[1]==f[1]))};
+  const turn=v=>{if(v[0]!=-d[0]||v[1]!=-d[1])q=v};
+  const paint=()=>{x.fillStyle="#0d0d22";x.fillRect(0,0,N*C,N*C);x.fillStyle="#ff2e97";x.fillRect(f[0]*C+2,f[1]*C+2,C-4,C-4);s.forEach((p,i)=>{x.fillStyle=i?"#00f0ff":"#39ff88";x.fillRect(p[0]*C+1,p[1]*C+1,C-2,C-2)})};
+  const end=()=>{clearInterval(iv);$("#msg").innerHTML=`Game over — score <b class="ok">${sc}</b> <button class="b" id="again">▶ Play again</button>`;$("#again").onclick=start;if(sc>0)submit("snake",sc)};
+  const tick=()=>{d=q;const h=[s[0][0]+d[0],s[0][1]+d[1]];if(h[0]<0||h[1]<0||h[0]>=N||h[1]>=N||s.some(p=>p[0]==h[0]&&p[1]==h[1]))return end();s.unshift(h);if(h[0]==f[0]&&h[1]==f[1]){sc++;hud("Score: "+sc);spawn()}else s.pop();paint()};
+  function start(){clearInterval(iv);s=[[10,10],[9,10],[8,10]];d=q=[1,0];sc=0;hud("Score: 0");spawn();$("#msg").textContent="Arrow keys, WASD, swipe or the buttons";paint();iv=setInterval(tick,110)}
+  const key=e=>{const k=e.key.length==1?e.key.toLowerCase():e.key,m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]}[k];if(m){e.preventDefault();turn(m)}};
+  addEventListener("keydown",key);
+  el.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>turn(b.dataset.d.split(",").map(Number)));
+  let tx,ty;cv.ontouchstart=e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY};
+  cv.ontouchend=e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)+Math.abs(dy)>20)turn(Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)])};
+  gm={stop(){clearInterval(iv);removeEventListener("keydown",key)}};start()}
+
+function gMemory(el){
+  const E=["🎮","👾","🚀","🎯","🧠","🔥","⚡","👑"],deck=shuf([...E,...E]);let open=[],moves=0,done=0,lock=false;
+  el.innerHTML=`<div class="mg">${deck.map((_,i)=>`<button class="mc">?</button>`).join("")}</div><div id="msg" style="margin-top:10px;font-weight:700"></div>`;
+  const cs=[...el.querySelectorAll(".mc")];hud("Moves: 0");
+  cs.forEach((c,i)=>c.onclick=()=>{
+    if(lock||open.includes(i)||c.classList.contains("ok"))return;
+    c.textContent=deck[i];c.classList.add("on");open.push(i);
+    if(open.length<2)return;
+    moves++;hud("Moves: "+moves);const[a,b]=open;
+    if(deck[a]==deck[b]){cs[a].classList.add("ok");cs[b].classList.add("ok");open=[];
+      if(++done==8){$("#msg").innerHTML=`Done in <b class="ok">${moves}</b> moves! <button class="b" id="again">▶ Play again</button>`;$("#again").onclick=()=>gMemory(el);submit("memory",moves)}}
+    else{lock=true;setTimeout(()=>{[a,b].forEach(k=>{cs[k].textContent="?";cs[k].classList.remove("on")});open=[];lock=false},800)}});
+  gm={stop(){lock=true}}}
+
+function gReaction(el){
+  let n=0,tot=0,t0=0,tm,st="idle";
+  el.innerHTML=`<div class="rb" id="rb">Tap to start</div><div id="msg" style="margin-top:10px;font-weight:700"></div>`;
+  const rb=$("#rb"),set=(bg,t)=>{rb.style.background=bg;rb.textContent=t};
+  const wait=()=>{st="wait";set("#5a1042","Wait for green…");tm=setTimeout(()=>{st="go";t0=performance.now();set("#1c8a4a","TAP NOW!")},1500+Math.random()*2500)};
+  rb.onclick=()=>{
+    if(st=="idle"||st=="done"){n=0;tot=0;$("#msg").textContent="";hud("Round 1 / 5");return wait()}
+    if(st=="wait"){clearTimeout(tm);st="idle";return set("#3a1224","Too soon! Tap to restart")}
+    if(st=="go"){const ms=Math.round(performance.now()-t0);n++;tot+=ms;$("#msg").innerHTML=`Round ${n}: <b class="ok">${ms} ms</b>`;
+      if(n<5){hud(`Round ${n+1} / 5`);st="next";return set("#12122a",ms+" ms — tap for the next round")}
+      const avg=Math.round(tot/5);st="done";set("#12122a","Average "+avg+" ms — tap to play again");$("#msg").innerHTML=`Average of 5: <b class="ok">${avg} ms</b>`;submit("reaction",avg);return}
+    if(st=="next")wait()};
+  gm={stop(){clearTimeout(tm)}}}
+
+const TL=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+const tWin=b=>{for(const l of TL)if(b[l[0]]&&b[l[0]]==b[l[1]]&&b[l[1]]==b[l[2]])return b[l[0]];return b.every(Boolean)?"T":""};
+const tAi=(b,rnd=Math.random)=>{const e=b.map((v,i)=>v?-1:i).filter(i=>i>=0),pick=a=>a[Math.floor(rnd()*a.length)],find=p=>e.find(i=>{const c=[...b];c[i]=p;return tWin(c)==p});
+  if(rnd()<.25)return pick(e);const w=find("O");if(w!=null)return w;const k=find("X");if(k!=null)return k;if(!b[4])return 4;const cs=[0,2,6,8].filter(i=>!b[i]);return pick(cs.length?cs:e)};
+function gTtt(el){
+  let b=Array(9).fill(""),streak=0,over=false;
+  el.innerHTML=`<div class="tg" id="tg">${b.map(()=>'<button class="b g"></button>').join("")}</div><div id="msg" style="margin-top:10px;font-weight:700"></div>`;
+  const cs=[...el.querySelectorAll("#tg button")],paint=()=>cs.forEach((c,i)=>{c.textContent=b[i];c.style.color=b[i]=="X"?"var(--cy)":"var(--pk)"}),msg=t=>{$("#msg").innerHTML=t};
+  const fin=r=>{over=true;paint();
+    if(r=="X"){streak++;hud("Win streak: "+streak);submit("ttt",streak);msg(`You win! Streak <b class="ok">${streak}</b>. <button class="b" id="nx">Next game</button>`)}
+    else{if(r=="O")streak=0;hud("Win streak: "+streak);msg(`${r=="T"?"Draw.":"Computer wins."} <button class="b" id="nx">Next game</button>`)}
+    $("#nx").onclick=()=>{b=Array(9).fill("");over=false;msg("");paint()}};
+  cs.forEach((c,i)=>c.onclick=()=>{if(over||b[i])return;b[i]="X";let r=tWin(b);if(r)return fin(r);b[tAi(b)]="O";r=tWin(b);paint();if(r)fin(r)});
+  hud("Win streak: 0");paint();gm={stop(){over=true}}}
+
+async function doForgot(){const roll=$("#r").value.trim().toUpperCase();if(!ROLL_RE.test(roll))return alert("Enter your roll number, e.g. MBA12345.");const au=await authCall("forgot",{roll});if(au){ap={roll};lt="fp2";show()}}
+async function doPwReset(){const otp=$("#otp").value.trim(),pw=$("#pw").value;if(!/^\d{6}$/.test(otp))return alert("Enter the 6-digit code.");if(pw.length<6)return alert("Choose a password of at least 6 characters.");if(pw!==$("#pw2").value)return alert("The two passwords don't match.");const au=await authCall("pwReset",{roll:ap.roll,otp,password:pw});if(au)startSession(au)}
+function backupNow(){call("backupNow").then(ok=>{if(ok)alert("Backup saved to your Google Drive folder “Gambit Backups”.")})}
+function showPlayers(id){const e=S.events.find(e=>e.id==id);if(!e)return;const ps=S.signups.filter(g=>g.ev==id);
+  modal(`<h2>${esc(e.title).toUpperCase()}</h2>`+(ps.length?ps.map((g,i)=>`<div class="lr"><span class="rk">${i+1}</span><span style="flex:1">${esc(g.name)} · ${esc(g.roll)}</span><button class="b d" onclick="call('evLeave',{id:${id},roll:'${sid(g.roll)}'});document.getElementById('mo').remove()">✖</button></div>`).join(""):'<div class="em">Nobody yet.</div>'))}
 function addEvent(){const title=prompt("Event title (e.g. FIFA Tournament):");if(!title)return;const date=prompt("Date & time (format 2026-10-25 18:00):",now().slice(0,10)+" 18:00");if(!date)return;
   call("evAdd",{title,date,venue:prompt("Venue:")||"",game:prompt("Game (optional):")||"",max:parseInt(prompt("Max participants (0 = unlimited):","0"))||0,desc:prompt("Short description:")||""})}
 const ST={Open:"pen",Approved:"ok",Bought:"ok",Declined:"no"};
@@ -371,7 +519,7 @@ function rqs(){
     ${admin?`<select style="width:auto" onchange="call('rqStatus',{id:${r.id},status:this.value})">${["Open","Approved","Bought","Declined"].map(x=>`<option${x==r.status?" selected":""}>${x}</option>`).join("")}</select> <button class="b d" onclick="call('rqDel',{id:${r.id}})">✖</button>`:""}</div>`}).join(""):'<div class="em">No requests yet — suggest a game!</div>')}
 function addReq(){const title=prompt("Game or equipment you'd like the club to get:");if(!title)return;call("rqAdd",{title,note:prompt("Why? (optional, e.g. great for 4 players)")||"",name:me.name})}
 function askCond(id,edit){
-  const x=S.issues.find(i=>i.id==id),d=document.createElement("div");d.id="mo";
+  const x=S.issues.find(i=>i.id==id);if(!x)return;mo();const d=document.createElement("div");d.id="mo";
   d.innerHTML=`<div class="card" style="width:100%;max-width:360px"><h2>${edit?"✎ CONDITION CHECK":"↩ RETURN"}: ${esc(x.item).toUpperCase()}</h2><label>CONDITION</label><select id="cd">${COND.map(c=>`<option${c==x.cond?" selected":""}>${c}</option>`).join("")}</select><label>NOTE (REQUIRED IF NOT GOOD)</label><input id="cn" maxlength="120" value="${esc(x.note||"")}" placeholder="e.g. scratch on controller"><button class="b w" id="ok">✔ CONFIRM</button><button class="b g w" style="font-size:14px;padding:8px;margin-top:8px" id="no">Cancel</button></div>`;
   document.body.appendChild(d);
   $("#no").onclick=()=>d.remove();
@@ -382,16 +530,16 @@ function lb(){
   const list=(a,c)=>a.length?a.map((r,i)=>`<div class="lr${me&&r.k==me.roll?" me":""}"><span class="rk">${["🥇","🥈","🥉"][i]||i+1}</span><span class="ln">${esc(r.l)}</span><div class="bw"><div class="bf" style="width:${r.n/a[0].n*100}%;background:var(${c})"></div></div><b>${r.n}</b></div>`).join(""):'<div class="em">No activity yet.</div>';
   $("#v").innerHTML=`<div class="bar"><button class="b ${lp=="m"?"":"g"}" onclick="lp='m';lb()">This month</button><button class="b ${lp=="a"?"":"g"}" onclick="lp='a';lb()">All time</button></div>
   <div class="lg"><div><h3>★ TOP PLAYERS</h3>${list(top(x=>x.roll,x=>tn(x.roll,x.name)),"--cy")}</div><div><h3>◆ MOST BORROWED</h3>${list(top(x=>x.item,x=>x.item),"--pk")}</div></div>`}
-function issue(id){const i=S.items.find(i=>i.id==id);if(i.repair)return alert("This item is under repair.");
-  if(confirm(`Issue '${i.name}' to ${me.name} (${me.roll})?`+(i.ver?`\n\nNote: this item needs a quick verification call from the club to ${me.mobile}. Please keep your phone reachable.`:"")))call("issue",{item:i.name,name:me.name,roll:me.roll,mobile:me.mobile})}
-function addItem(){const name=prompt("Name of game/equipment:");if(!name)return;const cat=prompt("Category (Board Game, Card Game, Console, Controller, Equipment):")||"",total=parseInt(prompt("Quantity owned:","1")),
-  ver=confirm("Should this item need a verification call when issued?\n\nOK = Yes, Cancel = No");if(total>0)call("add",{name:name.trim(),cat:cat.trim(),total,ver})}
+function issue(id){const i=S.items.find(i=>i.id==id);if(!i)return;if(i.repair)return alert("This item is under repair.");
+  if(confirm(`Issue '${i.name}' to ${me.name} (${me.roll})?`))call("issue",{item:i.name,name:me.name,roll:me.roll,mobile:me.mobile})}
+function addItem(){const name=prompt("Name of game/equipment:");if(!name)return;const cat=prompt("Category (Board Game, Card Game, Console, Controller, Equipment):")||"",total=parseInt(prompt("Quantity owned:","1"));if(total>0)call("add",{name:name.trim(),cat:cat.trim(),total})}
 function setQ(id,cur){const total=parseInt(prompt("New total quantity:",cur));if(total>0)call("set",{id,total})}
-function csv(){const r=[["Item","Name","Roll No","Mobile","Issued At","Returned At","Verified","Condition","Note"],...S.issues.map(x=>[x.item,x.name,x.roll,"'"+x.mobile,x.at,x.ret,x.vf=="P"?"Pending":x.vf||"",x.cond||"",x.note||""])];
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.map(l=>l.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(",")).join("\n")],{type:"text/csv"}));a.download="gambit_issues.csv";a.click()}
+function csv(){const r=[["Item","Name","Roll No","Mobile","Issued At","Returned At","Condition","Note"],...S.issues.map(x=>[x.item,x.name,x.roll,x.mobile,x.at,x.ret,x.cond||"",x.note||""])];
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([r.map(l=>l.map(c=>{c=String(c);if(/^[=+\-@]/.test(c))c="'"+c;return'"'+c.replace(/"/g,'""')+'"'}).join(",")).join("\n")],{type:"text/csv"}));a.download="gambit_issues.csv";a.click()}
 
-if(API_URL)setInterval(()=>{if(document.hidden||!(me||admin)||document.body.classList.contains("busy"))return;
-  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"get",pin,roll:me?me.roll:""})}).then(r=>r.json()).then(j=>{const n=fx(j);if(!j.error&&JSON.stringify(n)!==JSON.stringify(S)){S=n;draw()}}).catch(()=>{})},30000);
+if(API_URL)setInterval(()=>{if(document.hidden||!(me||admin)||inflight>0)return;
+  fetch(API_URL,{method:"POST",body:JSON.stringify({action:"get",pin,roll:me?me.roll:"",token:me?me.token:""})}).then(r=>r.json()).then(j=>{const n=fx(j);if(me&&n.authed===false)return expire();if(!j.error&&JSON.stringify(n)!==JSON.stringify(S)){S=n;draw()}}).catch(()=>{})},30000);
+try{const ss=JSON.parse(localStorage.gambit_session||"null");if(ss&&ss.token)me=ss}catch(e){/* corrupt saved login: ignore it */}
 if(!API_URL)local("get",{});else call("get");
 show();
 </script></body></html>
